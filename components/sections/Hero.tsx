@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, Suspense } from "react";
+import { useRef, useEffect, Suspense } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -8,29 +8,69 @@ const ParticleField = dynamic(() => import("@/components/ui/ParticleField"), {
   loading: () => null,
 });
 
-const chars = (str: string) => str.split("").map((c, i) => ({ c, i }));
+/* ── 3D name that tilts with the mouse ──────────────────────── */
+function Name3D({ name }: { name: string }) {
+  const ref = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Disable tilt on touch devices — no mouse, and transforms cause overflow issues
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    const onMove = (e: MouseEvent) => {
+      const rx = ((e.clientY / window.innerHeight) - 0.5) * -14;
+      const ry = ((e.clientX / window.innerWidth)  - 0.5) *  18;
+      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    };
+
+    const onLeave = () => {
+      el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseleave", onLeave);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
+
+  return (
+    <h1
+      ref={ref}
+      aria-label={name}
+      style={{
+        fontFamily:    "var(--font-dm-serif), Georgia, serif",
+        fontStyle:     "italic",
+        fontSize:      "clamp(3rem, 10vw, 9rem)",
+        lineHeight:    0.95,
+        letterSpacing: "-0.025em",
+        color:         "var(--text-primary)",
+        marginBottom:  "1.5rem",
+        willChange:    "transform",
+        transition:    "transform 0.12s ease-out",
+        textShadow: `
+          1px 1px 0px var(--accent),
+          2px 2px 0px var(--accent),
+          3px 3px 0px var(--accent),
+          4px 4px 0px var(--accent),
+          5px 5px 0px var(--accent),
+          6px 6px 0px var(--accent),
+          7px 7px 16px rgba(0,0,0,0.18)
+        `,
+        display: "block",
+        width: "100%",
+      }}
+    >
+      {name}
+    </h1>
+  );
+}
 
 export default function Hero() {
   const shouldReduce = useReducedMotion();
-
-  const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.03 } },
-  };
-
-  const charVariants = {
-    hidden:  shouldReduce ? { opacity: 0 } : { opacity: 0, y: "100%", rotateX: -15 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: "0%",
-      rotateX: 0,
-      transition: {
-        delay:    i * 0.03,
-        duration: 0.5,
-        ease:     [0.25, 0.46, 0.45, 0.94] as [number,number,number,number],
-      },
-    }),
-  };
 
   const fadeUp = {
     hidden:  shouldReduce ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(4px)" },
@@ -44,7 +84,7 @@ export default function Hero() {
       className="relative flex flex-col items-center justify-center min-h-svh overflow-hidden"
       aria-label="Introduction"
     >
-      {/* Particle canvas — desktop only */}
+      {/* Subtle particle field — desktop only */}
       <div className="absolute inset-0 hidden md:block" aria-hidden="true">
         <Suspense fallback={null}>
           <ParticleField />
@@ -66,32 +106,14 @@ export default function Hero() {
           Software Engineer
         </motion.p>
 
-        {/* Display name — character split */}
-        <motion.h1
-          className="font-display italic overflow-hidden"
-          style={{
-            fontSize:      "clamp(4rem, 10vw, 9rem)",
-            lineHeight:    0.95,
-            letterSpacing: "-0.025em",
-            color:         "var(--text-primary)",
-            marginBottom:  "1.5rem",
-          }}
-          aria-label={name}
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
+        {/* 3D Name */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          {chars(name).map(({ c, i }) => (
-            <motion.span
-              key={i}
-              custom={i}
-              variants={charVariants}
-              style={{ display: "inline-block", whiteSpace: c === " " ? "pre" : undefined }}
-            >
-              {c}
-            </motion.span>
-          ))}
-        </motion.h1>
+          <Name3D name={name} />
+        </motion.div>
 
         {/* Tagline */}
         <motion.p
@@ -126,12 +148,12 @@ export default function Hero() {
             href="#experience"
             className="inline-flex items-center h-11 px-7 rounded-full text-sm font-medium transition-all duration-200"
             style={{
-              background: "var(--text-primary)",
-              color:      "var(--bg-base)",
+              background:    "var(--text-primary)",
+              color:         "var(--bg-base)",
               letterSpacing: "-0.01em",
             }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = "0.88")}
-            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.opacity = "0.88")}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = "1")}
           >
             View work
           </a>
@@ -146,14 +168,16 @@ export default function Hero() {
               letterSpacing: "-0.01em",
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background   = "var(--accent-muted)";
-              (e.currentTarget as HTMLElement).style.borderColor  = "var(--accent)";
-              (e.currentTarget as HTMLElement).style.color        = "var(--text-primary)";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background  = "var(--accent-muted)";
+              el.style.borderColor = "var(--accent)";
+              el.style.color       = "var(--text-primary)";
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background   = "transparent";
-              (e.currentTarget as HTMLElement).style.borderColor  = "var(--border-medium)";
-              (e.currentTarget as HTMLElement).style.color        = "var(--text-secondary)";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background  = "transparent";
+              el.style.borderColor = "var(--border-medium)";
+              el.style.color       = "var(--text-secondary)";
             }}
           >
             Resume

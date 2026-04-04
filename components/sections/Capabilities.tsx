@@ -162,12 +162,12 @@ export default function Capabilities() {
           ].map(({ cat, items }) => (
             <div
               key={cat}
-              className="flex items-baseline gap-0 py-4"
+              className="flex flex-wrap items-baseline gap-0 py-4"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
               <span
                 style={{
-                  width: "160px", flexShrink: 0,
+                  width: "140px", flexShrink: 0,
                   fontSize: "0.6875rem", fontWeight: 600,
                   letterSpacing: "0.11em", textTransform: "uppercase",
                   color: "var(--text-tertiary)",
@@ -176,7 +176,7 @@ export default function Capabilities() {
                 {cat}
               </span>
               <span
-                style={{ fontSize: "0.875rem", fontWeight: 300, color: "var(--text-secondary)", lineHeight: 1.85 }}
+                style={{ fontSize: "0.875rem", fontWeight: 300, color: "var(--text-secondary)", lineHeight: 1.85, minWidth: 0, flex: 1 }}
               >
                 {items.map((item, j) => (
                   <span key={item}>
