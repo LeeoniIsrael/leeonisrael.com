@@ -55,7 +55,7 @@ export default function Contact() {
             initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display italic mb-12"
+            className="font-display mb-12"
             style={{
               fontSize:      "clamp(2.5rem, 6vw, 6rem)",
               lineHeight:    1.05,

@@ -84,7 +84,7 @@ export default function About() {
             <p className="eyebrow mb-5">The person behind the work</p>
 
             <h2
-              className="font-display italic mb-6"
+              className="font-display mb-6"
               style={{ fontSize: "clamp(2rem, 4vw, 3rem)", lineHeight: 1.1, color: "var(--text-primary)", letterSpacing: "-0.02em" }}
             >
               Engineer, builder,<br />first-generation everything.

@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, useMotionValue, useSpring } from "framer-motion";
 import {
   Brain, Server, Code2, Database, Globe, Layers, type LucideIcon
 } from "lucide-react";
@@ -61,7 +61,28 @@ function BentoCell({ icon: Icon, title, desc, wide, i, hoveredIdx, setHoveredIdx
   const isHovered    = hoveredIdx === i;
   const otherHovered = hoveredIdx !== null && hoveredIdx !== i;
 
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springRX = useSpring(rotateX, { stiffness: 150, damping: 20 });
+  const springRY = useSpring(rotateY, { stiffness: 150, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduce || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const nx = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
+    const ny = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
+    rotateX.set(-ny * 8);
+    rotateY.set( nx * 10);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+    setHoveredIdx(null);
+  };
+
   return (
+    <div style={{ perspective: "800px" }} className={wide ? "sm:col-span-2 lg:col-span-1" : ""}>
     <motion.div
       ref={ref}
       initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 20 }}
@@ -71,15 +92,20 @@ function BentoCell({ icon: Icon, title, desc, wide, i, hoveredIdx, setHoveredIdx
         duration: 0.5,
         opacity:  { duration: otherHovered ? 0.15 : 0.5 },
       }}
-      className={`rounded-2xl p-7 transition-all duration-300 ${wide ? "sm:col-span-2 lg:col-span-1" : ""}`}
       style={{
+        rotateX: springRX,
+        rotateY: springRY,
         background: "var(--bg-raised)",
-        border:     "1px solid var(--border-subtle)",
+        border:     `1px solid var(--border-subtle)`,
         boxShadow:  isHovered ? "var(--shadow-glow)" : "var(--shadow-sm)",
         cursor:     "default",
+        borderRadius: "1rem",
+        padding:    "1.75rem",
+        transition: "box-shadow 0.3s, border-color 0.3s",
       }}
+      onMouseMove={handleMouseMove}
       onMouseEnter={() => setHoveredIdx(i)}
-      onMouseLeave={() => setHoveredIdx(null)}
+      onMouseLeave={handleMouseLeave}
     >
       <div
         className="w-10 h-10 rounded-lg flex items-center justify-center mb-5"
@@ -112,6 +138,7 @@ function BentoCell({ icon: Icon, title, desc, wide, i, hoveredIdx, setHoveredIdx
         {desc}
       </p>
     </motion.div>
+    </div>
   );
 }
 
@@ -132,7 +159,7 @@ export default function Capabilities() {
         >
           <p className="eyebrow mb-3">Capabilities</p>
           <h2
-            className="font-display italic"
+            className="font-display"
             style={{ fontSize: "clamp(2rem, 4vw, 3rem)", letterSpacing: "-0.02em", color: "var(--text-primary)", lineHeight: 1.1 }}
           >
             What I bring to the table.
@@ -162,37 +189,49 @@ export default function Capabilities() {
           ].map(({ cat, items }) => (
             <div
               key={cat}
-              className="flex flex-wrap items-baseline gap-0 py-4"
+              className="py-5"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
+              {/* Category label */}
               <span
+                className="block mb-2"
                 style={{
-                  width: "140px", flexShrink: 0,
-                  fontSize: "0.6875rem", fontWeight: 600,
-                  letterSpacing: "0.11em", textTransform: "uppercase",
+                  fontSize: "0.625rem", fontWeight: 700,
+                  letterSpacing: "0.13em", textTransform: "uppercase",
                   color: "var(--text-tertiary)",
                 }}
               >
                 {cat}
               </span>
-              <span
-                style={{ fontSize: "0.875rem", fontWeight: 300, color: "var(--text-secondary)", lineHeight: 1.85, minWidth: 0, flex: 1 }}
-              >
-                {items.map((item, j) => (
-                  <span key={item}>
-                    <span
-                      style={{ transition: "color 0.15s" }}
-                      onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
-                      onMouseLeave={e => (e.currentTarget.style.color = "var(--text-secondary)")}
-                    >
-                      {item}
-                    </span>
-                    {j < items.length - 1 && (
-                      <span style={{ color: "var(--text-tertiary)", margin: "0 6px" }}>·</span>
-                    )}
+
+              {/* Skills — pill tags, wrap naturally */}
+              <div className="flex flex-wrap gap-2">
+                {items.map((item) => (
+                  <span
+                    key={item}
+                    style={{
+                      fontSize: "0.8125rem", fontWeight: 400,
+                      color: "var(--text-secondary)",
+                      background: "var(--bg-raised)",
+                      border: "1px solid var(--border-subtle)",
+                      padding: "3px 10px",
+                      borderRadius: "6px",
+                      whiteSpace: "nowrap",
+                      transition: "color 0.15s, border-color 0.15s",
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.color       = "var(--text-primary)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "var(--border-medium)";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.color       = "var(--text-secondary)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
+                    }}
+                  >
+                    {item}
                   </span>
                 ))}
-              </span>
+              </div>
             </div>
           ))}
         </div>

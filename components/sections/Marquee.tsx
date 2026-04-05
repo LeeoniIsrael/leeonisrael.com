@@ -38,7 +38,7 @@ export default function Marquee() {
         {Array.from({ length: REPEAT }).map((_, i) => (
           <span
             key={i}
-            className="font-display italic pr-0"
+            className="font-display pr-0"
             style={{ fontSize: "1.75rem", color: "var(--text-secondary)", letterSpacing: "-0.01em" }}
           >
             {PHRASE}

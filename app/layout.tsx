@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
+import { Outfit, Syne, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
@@ -9,19 +9,18 @@ import LenisProvider  from "@/components/layout/LenisProvider";
 import ScrollProgress from "@/components/layout/ScrollProgress";
 import CustomCursor   from "@/components/layout/CustomCursor";
 
-const inter = Inter({
+const outfit = Outfit({
   subsets:  ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
   display:  "swap",
   weight:   ["300", "400", "500", "600", "700"],
 });
 
-const dmSerif = DM_Serif_Display({
+const syne = Syne({
   subsets:  ["latin"],
-  variable: "--font-dm-serif",
+  variable: "--font-syne",
   display:  "swap",
-  style:    ["normal", "italic"],
-  weight:   "400",
+  weight:   ["400", "600", "700", "800"],
 });
 
 const jetbrains = JetBrains_Mono({
@@ -66,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${dmSerif.variable} ${jetbrains.variable}`}
+      className={`${outfit.variable} ${syne.variable} ${jetbrains.variable}`}
     >
       <body className="font-sans antialiased">
         <ThemeProvider

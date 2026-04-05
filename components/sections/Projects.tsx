@@ -95,34 +95,46 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const shouldReduce = useReducedMotion();
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 120, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 120, damping: 20 });
+  const mouseX  = useMotionValue(0);
+  const mouseY  = useMotionValue(0);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+
+  const springX  = useSpring(mouseX,  { stiffness: 120, damping: 20 });
+  const springY  = useSpring(mouseY,  { stiffness: 120, damping: 20 });
+  const springRX = useSpring(rotateX, { stiffness: 100, damping: 18 });
+  const springRY = useSpring(rotateY, { stiffness: 100, damping: 18 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (shouldReduce) return;
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
-    const cx = rect.left + rect.width / 2;
+    const cx = rect.left + rect.width  / 2;
     const cy = rect.top  + rect.height / 2;
-    mouseX.set(((e.clientX - cx) / rect.width)  * 8);
-    mouseY.set(((e.clientY - cy) / rect.height) * 8);
+    const nx = (e.clientX - cx) / (rect.width  / 2);
+    const ny = (e.clientY - cy) / (rect.height / 2);
+    mouseX.set(nx * 5);
+    mouseY.set(ny * 5);
+    rotateX.set(-ny * 10);
+    rotateY.set( nx * 14);
   };
 
   const handleMouseLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
+    rotateX.set(0);
+    rotateY.set(0);
     setHovered(false);
   };
 
   return (
+    <div style={{ perspective: "900px" }}>
     <motion.div
       ref={ref}
       initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ delay: index * 0.06, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      style={{ x: springX, y: springY }}
+      style={{ x: springX, y: springY, rotateX: springRX, rotateY: springRY }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
@@ -262,6 +274,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
         </div>
       </motion.div>
     </motion.div>
+    </div>
   );
 }
 
@@ -282,7 +295,7 @@ export default function Projects() {
           <div>
             <p className="eyebrow mb-3">Selected work</p>
             <h2
-              className="font-display italic"
+              className="font-display"
               style={{ fontSize: "clamp(2rem, 4vw, 3rem)", letterSpacing: "-0.02em", color: "var(--text-primary)", lineHeight: 1.1 }}
             >
               Things I&apos;ve built.

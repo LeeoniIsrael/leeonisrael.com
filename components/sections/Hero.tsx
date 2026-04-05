@@ -15,18 +15,38 @@ function Name3D({ name }: { name: string }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    // Disable tilt on touch devices — no mouse, and transforms cause overflow issues
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const onMove = (e: MouseEvent) => {
-      const rx = ((e.clientY / window.innerHeight) - 0.5) * -14;
-      const ry = ((e.clientX / window.innerWidth)  - 0.5) *  18;
-      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      const nx  = (e.clientX / window.innerWidth)  - 0.5; // -0.5 → 0.5
+      const ny  = (e.clientY / window.innerHeight) - 0.5;
+      const rx  = ny * -28;  // vertical tilt ±28°
+      const ry  = nx *  36;  // horizontal tilt ±36°
+
+      // Shadow shifts opposite to tilt — reinforces the light-source illusion
+      const sx  = -nx * 12;
+      const sy  = -ny * 8;
+      const layers = Array.from({ length: 8 }, (_, i) => {
+        const t = i + 1;
+        return `${(sx * t) / 8}px ${(sy * t) / 8}px 0px var(--accent)`;
+      }).join(", ");
+
+      el.style.transform  = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      el.style.textShadow = `${layers}, 0px 20px 40px rgba(0,0,0,0.22)`;
     };
 
     const onLeave = () => {
-      el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+      el.style.transform  = "perspective(800px) rotateX(0deg) rotateY(0deg)";
+      el.style.textShadow = [
+        "1px 1px 0px var(--accent)",
+        "2px 2px 0px var(--accent)",
+        "3px 3px 0px var(--accent)",
+        "4px 4px 0px var(--accent)",
+        "5px 5px 0px var(--accent)",
+        "6px 6px 0px var(--accent)",
+        "7px 7px 0px var(--accent)",
+        "8px 8px 20px rgba(0,0,0,0.18)",
+      ].join(", ");
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -42,26 +62,27 @@ function Name3D({ name }: { name: string }) {
       ref={ref}
       aria-label={name}
       style={{
-        fontFamily:    "var(--font-dm-serif), Georgia, serif",
-        fontStyle:     "italic",
+        fontFamily:    "var(--font-syne), system-ui, sans-serif",
+        fontWeight:    800,
         fontSize:      "clamp(3rem, 10vw, 9rem)",
-        lineHeight:    0.95,
-        letterSpacing: "-0.025em",
+        lineHeight:    0.92,
+        letterSpacing: "-0.03em",
         color:         "var(--text-primary)",
         marginBottom:  "1.5rem",
-        willChange:    "transform",
-        transition:    "transform 0.12s ease-out",
-        textShadow: `
-          1px 1px 0px var(--accent),
-          2px 2px 0px var(--accent),
-          3px 3px 0px var(--accent),
-          4px 4px 0px var(--accent),
-          5px 5px 0px var(--accent),
-          6px 6px 0px var(--accent),
-          7px 7px 16px rgba(0,0,0,0.18)
-        `,
+        willChange:    "transform, text-shadow",
+        transition:    "transform 0.08s ease-out, text-shadow 0.08s ease-out",
+        textShadow: [
+          "1px 1px 0px var(--accent)",
+          "2px 2px 0px var(--accent)",
+          "3px 3px 0px var(--accent)",
+          "4px 4px 0px var(--accent)",
+          "5px 5px 0px var(--accent)",
+          "6px 6px 0px var(--accent)",
+          "7px 7px 0px var(--accent)",
+          "8px 8px 20px rgba(0,0,0,0.18)",
+        ].join(", "),
         display: "block",
-        width: "100%",
+        width:   "100%",
       }}
     >
       {name}
