@@ -1,0 +1,47 @@
+[
+  {
+    "title": "APEX Trading",
+    "desc": "A 30-day live experiment: a Claude-powered autonomous trading agent making disciplined, risk-managed decisions in real markets. Momentum strategy backtested across SPY, QQQ, AAPL, MSFT, NVDA (2020–2024). Sharpe ratio 1.447 · 271.8% total return.",
+    "learned": "How to wire real financial data pipelines, backtest strategies rigorously, and think about risk — not just returns. The model is only as good as the data it acts on."
+  },
+  {
+    "title": "Spotify Splitter",
+    "desc": "AI-powered playlist optimizer. Splits any Spotify playlist into vibe-based sub-playlists via Groq LLM classification, or reorders for seamless DJ transitions using Camelot harmonic mixing. Handles 700+ track playlists.",
+    "learned": "Prompt engineering at scale isn't magic — it's schema design. Structuring the classification task correctly had more impact than model choice."
+  },
+  {
+    "title": "Signify",
+    "desc": "Real-time ASL hand gesture recognition — Best Overall Project at SEO 2024. A CNN reads hand landmarks from MediaPipe, maps to letters, and streams to speech via Google TTS. Zero lag, fully offline inference.",
+    "learned": "ML models feel abstract until you see someone use them in real time. Building the full stack — data → model → inference → UI — gave me appreciation for every layer."
+  },
+  {
+    "title": "Instagram Clone",
+    "desc": "Full-featured Instagram clone — 10,500+ lines replicating auth, image/video posting, real-time comments, follows, and an explore feed. React, Vite, Firebase. Live on Vercel.",
+    "learned": "Scale in code accumulates fast. Faithfully replicating a complex product's core UX taught me how to manage complexity across a large codebase."
+  },
+  {
+    "title": "Weather App",
+    "desc": "Immersive weather app with live sky backgrounds that shift with current conditions. Real-time data: UV index, wind, precipitation — rendered cinematically against live sky photography.",
+    "learned": "Constraints drive creativity. Working purely with vanilla JS and a single API forced clean DOM thinking with no shortcuts or framework crutches."
+  },
+  {
+    "title": "Dorm Dish",
+    "desc": "AI-powered recipe suggestions for college students — list your ingredients, get step-by-step recipes tuned to dorm-friendly equipment via OpenAI. Built in a team of four at SEO Tech Developers 2024.",
+    "learned": "Team dynamics matter as much as the code. Building under a deadline with four people taught me to scope, prioritize, and communicate clearly."
+  },
+  {
+    "title": "RentConnect",
+    "desc": "A cross-platform mobile app that helps students and landlords discover, list, and match on housing and roommates. Built with Expo and React Native — features AI-powered roommate matching, interactive property maps, real-time messaging, and property reviews.",
+    "learned": "Mobile product development requires thinking about the whole experience — state, navigation, real-time data, and the moments between screens. Every detail compounds at the app level."
+  },
+  {
+    "title": "Calculator",
+    "desc": "A clean, minimal calculator — arithmetic operations, keyboard support, dark UI with sharp operator accents. A focused exercise in pure DOM manipulation and UX clarity.",
+    "learned": "No framework teaches you how the DOM actually works. A reminder of why fundamentals matter — and why simple things are often harder to do well than complex ones."
+  },
+  {
+    "title": "Coin:Flipper",
+    "desc": "Full-stack budgeting app with multi-currency support. Tracks income, expenses, and savings goals with live exchange-rate conversion. Deployed to Heroku with a persistent SQLite backend.",
+    "learned": "Full-stack has a lot of surface area. Connecting a Flask API to a persistent backend with real currency conversion gave me a clear picture of how data flows end to end."
+  }
+]

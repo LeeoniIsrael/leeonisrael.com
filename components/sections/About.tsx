@@ -1,125 +1,136 @@
 "use client";
-import { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useCountUp } from "@/hooks/useCountUp";
-import { slideInLeft, fadeUp } from "@/lib/animations";
-
-const stats = [
-  { value: 3,  suffix: "+", label: "Years building" },
-  { value: 9,  suffix: "",  label: "Projects shipped" },
-  { value: 1,  suffix: "",  label: "Published paper" },
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, Plus } from "lucide-react";
+import { courses } from "@/lib/career";
+import { Reveal } from "@/components/ui/motion";
+const capabilities = [
+  [
+    "Product & discovery",
+    "User workflows, requirements, roadmap planning, prioritization, prototyping, demos, and Agile/Scrum. Connecting product decisions to technical tradeoffs, informed by work with clinical staff and business stakeholders.",
+  ],
+  [
+    "AI & machine learning",
+    "LLMs, RAG pipelines, CNNs, sentiment agents, XGBoost, and AI evaluation. Research in knowledge graphs, Q&A systems, and deception detection; production work in healthcare, finance, and agriculture.",
+  ],
+  [
+    "Full-stack engineering",
+    "React, React Native, Django, Node.js, Flask, Java, JavaScript, TypeScript, and SQL. Interfaces, services, and everything between.",
+  ],
+  [
+    "Data & cloud",
+    "AWS, Azure, MongoDB, DynamoDB, OpenSearch, Databricks, and Denodo. Building and maintaining the data behind the product.",
+  ],
+  [
+    "Backend & APIs",
+    "REST APIs, MCP servers, LangChain agents, Python microservices, and autonomous agent orchestration.",
+  ],
+  [
+    "Developer tooling",
+    "GitHub Actions, Kubernetes, Nginx, Selenium, CI/CD, and automation that gives the team time back.",
+  ],
 ];
-
-function Stat({ value, suffix, label }: { value: number; suffix: string; label: string }) {
-  const ref     = useRef<HTMLDivElement>(null);
-  const inView  = useInView(ref, { once: true, margin: "-80px" });
-  const counted = useCountUp(value, 1200, inView);
-
-  return (
-    <div ref={ref} className="flex flex-col gap-1">
-      <span
-        className="font-display"
-        style={{ fontSize: "3.5rem", lineHeight: 1, color: "var(--accent)", letterSpacing: "-0.03em" }}
-      >
-        {counted}{suffix}
-      </span>
-      <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>
-        {label}
-      </span>
-    </div>
-  );
-}
-
 export default function About() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const inView     = useInView(sectionRef, { once: true, margin: "-100px" });
-  const shouldReduce = useReducedMotion();
-
-  const leftVariants  = shouldReduce ? { hidden: { opacity: 0 }, visible: { opacity: 1 } } : slideInLeft;
-  const rightVariants = shouldReduce ? { hidden: { opacity: 0 }, visible: { opacity: 1 } } : fadeUp;
-
+  const [open, setOpen] = useState(false);
   return (
-    <section
-      ref={sectionRef}
-      id="about"
-      className="py-28 md:py-36"
-      aria-label="About"
-    >
-      <div className="section-wrap">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-20 items-start">
-
-          {/* Left — photo */}
-          <motion.div
-            className="md:col-span-2"
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={leftVariants}
-            transition={{ duration: 0.7 }}
-          >
-            <div
-              className="relative overflow-hidden rounded-2xl"
-              style={{ boxShadow: "var(--shadow-lg)", aspectRatio: "4/5" }}
-            >
-              <Image
-                src="/screenshots/leeoniisrael.png"
-                alt="Leeon Israel"
-                fill
-                sizes="(max-width: 768px) 100vw, 40vw"
-                className="object-cover object-top"
-                style={{ filter: "sepia(0.12) contrast(1.04)" }}
-                priority
-              />
-            </div>
-          </motion.div>
-
-          {/* Right — bio + stats */}
-          <motion.div
-            className="md:col-span-3 flex flex-col justify-center"
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={rightVariants}
-            transition={{ duration: 0.7, delay: 0.15 }}
-          >
-            <p className="eyebrow mb-5">The person behind the work</p>
-
-            <h2
-              className="font-display mb-6"
-              style={{ fontSize: "clamp(2rem, 4vw, 3rem)", lineHeight: 1.1, color: "var(--text-primary)", letterSpacing: "-0.02em" }}
-            >
-              Engineer, builder,<br />first-generation everything.
-            </h2>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", color: "var(--text-secondary)", fontSize: "1rem", lineHeight: 1.72, fontWeight: 300, maxWidth: "540px" }}>
-              <p>
-                I&apos;m a software engineer studying Computer Science at the University of South
-                Carolina. Currently Founding Engineer at Qatalyst Health — building AI-powered
-                products used by clinical staff every day.
-              </p>
-              <p>
-                Previously at UBS, John Deere, and the USC AI Institute. I care about the full
-                stack — from system design to the interactions users never have to think about.
-                I&apos;m drawn to hard problems, real constraints, and software that holds up in
-                production.
-              </p>
-            </div>
-
-            {/* Divider */}
-            <div
-              className="my-10"
-              style={{ height: "1px", background: "var(--border-medium)" }}
-              role="separator"
+    <section id="about" className="about-section section-wrap">
+      <Reveal className="about-grid">
+        <div>
+          <p className="section-label">A little more personal</p>
+          <h2>
+            An engineer’s perspective.
+            <br />A product mindset.
+          </h2>
+          <div className="about-portrait">
+            <Image
+              src="/images/leeon-israel.webp"
+              alt="Leeon Israel"
+              width={1400}
+              height={1400}
+              sizes="(max-width:700px) 70vw, 280px"
             />
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-8">
-              {stats.map((s) => (
-                <Stat key={s.label} {...s} />
+          </div>
+        </div>
+        <div className="about-copy">
+          <p>
+            I’m a software engineer and a University of South Carolina graduate.
+            I started in a production codebase at Empowered Buildings, spent
+            three years at the USC AI Institute, and helped build Qatalyst
+            Health as a founding engineer.
+          </p>
+          <p>
+            Today I’m at UBS in New York, and I’m working toward a move into
+            product management. I want to bring the judgment I’ve developed as
+            an engineer to understanding users, choosing priorities, and shaping
+            what a team builds.
+          </p>
+          <p>
+            At Qatalyst, conversations with nurses and care coordinators helped
+            shape the features I built. That connection between a user’s
+            workflow and a technical decision is the part of the work I want to
+            do more of.
+          </p>
+          <p>
+            Outside work, that curiosity turns into projects: a prayer
+            companion, a playlist tool, a student-housing agent, and whatever I
+            can’t stop thinking about next.
+          </p>
+          <a
+            className="text-link"
+            href="https://github.com/LeeoniIsrael"
+            target="_blank"
+            rel="noreferrer"
+          >
+            See what I’m working on <ArrowUpRight size={17} />
+          </a>
+        </div>
+      </Reveal>
+      <div className="skills-grid" id="skills">
+        {capabilities.map(([title, body]) => (
+          <div key={title}>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        ))}
+      </div>
+      <div className="education-block" id="education">
+        <div>
+          <p className="section-label">University of South Carolina, 2026</p>
+          <h3>B.S. Computer Science</h3>
+          <p>Minor in Business Information Management</p>
+          <span>4.0 major GPA · Dean’s List ×7 · First-Generation Scholar</span>
+        </div>
+        <button
+          className="text-link"
+          aria-expanded={open}
+          aria-controls="coursework"
+          onClick={() => setOpen(!open)}
+        >
+          Coursework{" "}
+          <Plus
+            size={18}
+            style={{ transform: open ? "rotate(45deg)" : undefined }}
+          />
+        </button>
+      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="coursework"
+            className="coursework"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+          >
+            <div>
+              {courses.map((c) => (
+                <span key={c}>{c}</span>
               ))}
             </div>
           </motion.div>
-        </div>
-      </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

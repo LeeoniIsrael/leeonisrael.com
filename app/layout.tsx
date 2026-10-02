@@ -1,86 +1,69 @@
 import type { Metadata } from "next";
-import { Outfit, Syne, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import Nav from "@/components/layout/Nav";
+import Footer from "@/components/layout/Footer";
 import "./globals.css";
-
-import Nav            from "@/components/layout/Nav";
-import Footer         from "@/components/layout/Footer";
-import LenisProvider  from "@/components/layout/LenisProvider";
-import ScrollProgress from "@/components/layout/ScrollProgress";
-import CustomCursor   from "@/components/layout/CustomCursor";
-
-const outfit = Outfit({
-  subsets:  ["latin"],
-  variable: "--font-outfit",
-  display:  "swap",
-  weight:   ["300", "400", "500", "600", "700"],
-});
-
-const syne = Syne({
-  subsets:  ["latin"],
-  variable: "--font-syne",
-  display:  "swap",
-  weight:   ["400", "600", "700", "800"],
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets:  ["latin"],
-  variable: "--font-jetbrains",
-  display:  "swap",
-  weight:   ["400", "500"],
-});
+import "@fontsource-variable/inter";
+import MotionProvider from "@/components/layout/MotionProvider";
 
 export const metadata: Metadata = {
-  title:       "Leeon Israel — Software Engineer",
-  description: "Software Engineer and AI Researcher. Founding Engineer at Qatalyst Health. Previously UBS, John Deere.",
+  metadataBase: new URL("https://leeonisrael.com"),
+  title: "Leeon Israel — Software Engineering & Product",
+  description:
+    "Forward Deployed AI Engineer at UBS, bringing an engineering foundation into product management. Explore my work in applied AI, full-stack systems, and product development.",
   openGraph: {
-    title:       "Leeon Israel — Software Engineer",
-    description: "Building intelligent systems at the intersection of AI and software engineering.",
-    images:      [{ url: "/screenshots/leeoniisrael.png" }],
-    type:        "website",
+    title: "Leeon Israel — Software Engineering & Product",
+    description:
+      "Software engineering, applied AI, and a growing focus on product management.",
+    images: [
+      {
+        url: "/images/leeon-israel.webp",
+        width: 1400,
+        height: 1400,
+        alt: "Leeon Israel",
+      },
+    ],
+    type: "website",
   },
   twitter: {
-    card:        "summary_large_image",
-    title:       "Leeon Israel — Software Engineer",
-    description: "Building intelligent systems at the intersection of AI and software engineering.",
-    images:      ["/screenshots/leeoniisrael.png"],
-  },
-  other: {
-    "application/ld+json": JSON.stringify({
-      "@context":   "https://schema.org",
-      "@type":      "Person",
-      name:         "Leeon Israel",
-      jobTitle:     "Software Engineer",
-      url:          "https://leeonisrael.com",
-      sameAs: [
-        "https://github.com/leeoniisrael",
-        "https://linkedin.com/in/leeoniisrael",
-      ],
-    }),
+    card: "summary_large_image",
+    images: ["/images/leeon-israel.webp"],
   },
 };
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${outfit.variable} ${syne.variable} ${jetbrains.variable}`}
-    >
-      <body className="font-sans antialiased">
-        <ThemeProvider
-          attribute="data-theme"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          <LenisProvider>
-            <ScrollProgress />
-            <CustomCursor />
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem>
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
+          <MotionProvider>
             <Nav />
             <main id="main-content">{children}</main>
             <Footer />
-          </LenisProvider>
+          </MotionProvider>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Person",
+                name: "Leeon Israel",
+                jobTitle: "Forward Deployed AI Engineer",
+                worksFor: { "@type": "Organization", name: "UBS" },
+                url: "https://leeonisrael.com",
+                sameAs: [
+                  "https://github.com/LeeoniIsrael",
+                  "https://linkedin.com/in/leeoniisrael",
+                ],
+              }),
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>

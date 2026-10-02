@@ -1,155 +1,173 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useSpring,
+  useReducedMotion,
+} from "framer-motion";
+import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
-import Link from "next/link";
-
+import { Menu, Moon, Sun, X, ArrowUpRight } from "lucide-react";
 const links = [
-  { label: "Work",      href: "#experience" },
-  { label: "Projects",  href: "#projects"   },
-  { label: "Skills",    href: "#skills"     },
-  { label: "Education", href: "#education"  },
+  { label: "Work", href: "#projects" },
+  { label: "Experience", href: "#experience" },
+  { label: "About", href: "#about" },
 ];
-
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen]         = useState(false);
+  const [open, setOpen] = useState(false),
+    [mounted, setMounted] = useState(false),
+    [active, setActive] = useState("home");
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted]   = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
+  const reduced = useReducedMotion();
+  const themeTransition = useRef<{ skipTransition: () => void } | null>(null);
+  function toggleTheme() {
+    const next = resolvedTheme === "dark" ? "light" : "dark";
+    if (reduced || !document.startViewTransition) return setTheme(next);
+    themeTransition.current?.skipTransition();
+    const transition = document.startViewTransition(() =>
+      flushSync(() => setTheme(next)),
+    );
+    themeTransition.current = transition;
+    transition.finished
+      .catch(() => {})
+      .finally(() => {
+        if (themeTransition.current === transition)
+          themeTransition.current = null;
+      });
+  }
+  const toggle = useRef<HTMLButtonElement>(null);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 180, damping: 35 });
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
+    setMounted(true);
+    const update = () => {
+      const ids = ["home", "projects", "experience", "about", "contact"];
+      let current = "home";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < innerHeight * 0.35)
+          current = id;
+      }
+      setActive(current);
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
   }, []);
-
-  const toggleTheme = () =>
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
-
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        toggle.current?.focus();
+      }
+    };
+    if (open) window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [open]);
   return (
-    <>
-      <header
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 h-16 transition-all duration-400"
-        style={{
-          background:   scrolled ? "var(--bg-glass)"     : "transparent",
-          backdropFilter: scrolled ? "var(--blur-md)"    : "none",
-          WebkitBackdropFilter: scrolled ? "var(--blur-md)" : "none",
-          borderBottom: scrolled ? "1px solid var(--border-subtle)" : "1px solid transparent",
-        }}
-        aria-label="Main navigation"
-      >
-        {/* Logo */}
-        <Link
-          href="#"
-          className="text-sm font-semibold tracking-tight transition-opacity hover:opacity-70"
-          style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}
+    <header className="site-header">
+      <div className="nav-inner">
+        <a
+          href="#home"
+          className="wordmark"
+          aria-label="Leeon Israel, back to top"
+          onClick={() => setOpen(false)}
         >
-          Leeon Israel
-        </Link>
-
-        {/* Center nav — desktop */}
-        <nav className="hidden md:flex items-center gap-8" aria-label="Site sections">
+          li<span>↗</span>
+        </a>
+        <nav className="desktop-nav" aria-label="Main navigation">
           {links.map((l) => (
             <a
-              key={l.label}
+              key={l.href}
               href={l.href}
-              className="text-sm font-normal transition-all duration-200"
-              style={{
-                color: "var(--text-secondary)",
-                letterSpacing: "-0.01em",
-                opacity: 0.7,
-              }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
-              onMouseLeave={e => (e.currentTarget.style.opacity = "0.7")}
+              aria-current={active === l.href.slice(1) ? "location" : undefined}
             >
               {l.label}
+              {active === l.href.slice(1) && (
+                <motion.span
+                  className="nav-indicator"
+                  layoutId="nav-indicator"
+                />
+              )}
             </a>
           ))}
         </nav>
-
-        {/* Right: theme + CTA */}
-        <div className="flex items-center gap-3">
-          {mounted && (
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="w-9 h-9 flex items-center justify-center rounded-full transition-colors"
-              style={{ color: "var(--text-secondary)" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-secondary)")}
-            >
-              {resolvedTheme === "dark"
-                ? <Sun  size={15} strokeWidth={1.5} />
-                : <Moon size={15} strokeWidth={1.5} />
-              }
-            </button>
-          )}
-
-          <a
-            href="mailto:leeoniisrael@gmail.com"
-            className="hidden md:flex items-center text-xs font-medium px-4 h-8 rounded-full transition-all duration-200"
-            style={{
-              color:  "var(--text-primary)",
-              border: "1px solid var(--border-medium)",
-              letterSpacing: "0.01em",
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background      = "var(--accent-muted)";
-              (e.currentTarget as HTMLElement).style.borderColor     = "var(--accent)";
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background  = "transparent";
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--border-medium)";
-            }}
-          >
-            Let&apos;s talk
-          </a>
-
-          {/* Mobile hamburger */}
+        <div className="nav-actions">
           <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden w-9 h-9 flex items-center justify-center"
-            aria-label="Toggle menu"
-            style={{ color: "var(--text-primary)" }}
+            className="icon-button theme-toggle"
+            aria-label={
+              mounted && resolvedTheme === "dark"
+                ? "Use light theme"
+                : "Use dark theme"
+            }
+            onClick={toggleTheme}
           >
-            {open ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={mounted && resolvedTheme === "dark" ? "dark" : "light"}
+                className="theme-icon"
+                initial={{
+                  opacity: 0,
+                  rotate: reduced ? 0 : -35,
+                  scale: reduced ? 1 : 0.85,
+                }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{
+                  opacity: 0,
+                  rotate: reduced ? 0 : 35,
+                  scale: reduced ? 1 : 0.85,
+                }}
+                transition={{ duration: reduced ? 0 : 0.12 }}
+              >
+                {mounted && resolvedTheme === "dark" ? (
+                  <Sun size={17} />
+                ) : (
+                  <Moon size={17} />
+                )}
+              </motion.span>
+            </AnimatePresence>
+          </button>
+          <a className="nav-contact text-link" href="#contact">
+            Get in touch <ArrowUpRight size={15} />
+          </a>
+          <button
+            ref={toggle}
+            className="icon-button menu-toggle"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? "Close navigation" : "Open navigation"}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X size={21} /> : <Menu size={21} />}
           </button>
         </div>
-      </header>
-
-      {/* Mobile overlay */}
+      </div>
       <AnimatePresence>
         {open && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 flex flex-col items-center justify-center md:hidden"
-            style={{ background: "var(--bg-base)" }}
-            onClick={() => setOpen(false)}
+          <motion.nav
+            id="mobile-nav"
+            className="mobile-nav"
+            aria-label="Mobile navigation"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
           >
-            <nav className="flex flex-col items-center gap-8">
-              {[...links, { label: "Resume", href: "/screenshots/resume.pdf" }].map((l, i) => (
-                <motion.a
-                  key={l.label}
-                  href={l.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06, duration: 0.4 }}
-                  className="font-display text-3xl"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {l.label}
-                </motion.a>
-              ))}
-            </nav>
-          </motion.div>
+            {[
+              ...links,
+              { label: "Resume", href: "/resume/leeon-israel.pdf" },
+              { label: "Contact", href: "#contact" },
+            ].map((l) => (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)}>
+                {l.label}
+                <ArrowUpRight size={20} />
+              </a>
+            ))}
+          </motion.nav>
         )}
       </AnimatePresence>
-    </>
+      <motion.div className="reading-progress" style={{ scaleX: progress }} />
+    </header>
   );
 }
