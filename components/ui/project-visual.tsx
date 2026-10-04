@@ -1,9 +1,12 @@
 import Image from "next/image";
 import type { Project } from "@/lib/portfolio";
+import { PhoneScreen } from "./phone-screen";
+import { projectScreens } from "@/lib/project-screens";
 
 export function previewFormat(project: Project) {
-  if (project.id === "kavanah") return "mobile";
-  if (project.image && project.id !== "rentconnect") return "web";
+  if (projectScreens[project.id]?.length)
+    return projectScreens[project.id][0].format ?? "mobile";
+  if (project.image) return "web";
   return "logo";
 }
 
@@ -56,26 +59,16 @@ export function ProjectVisual({
   screenIndex?: number;
 }) {
   const format = previewFormat(project);
-  if (format === "mobile")
+  const screens = projectScreens[project.id];
+  const screen = screens?.[screenIndex] ?? screens?.[0];
+  if (format === "mobile" && screen)
     return (
       <div className="project-preview preview-mobile" data-preview="mobile">
-        <div className="preview-phone">
-          <Image
-            src={
-              "/images/kavanah-" +
-              ["welcome", "preferences", "tradition"][screenIndex] +
-              ".webp"
-            }
-            alt={
-              "Kavanah " +
-              ["welcome", "reading preferences", "prayer tradition"][
-                screenIndex
-              ] +
-              " screen"
-            }
-            width={780}
-            height={1688}
-            sizes="(max-width:700px) 55vw, 260px"
+        <div className="preview-phone iphone-frame">
+          <PhoneScreen
+            screen={screen}
+            title={project.title}
+            sizes="(max-width:700px) 55vw, 300px"
           />
         </div>
       </div>
@@ -84,11 +77,15 @@ export function ProjectVisual({
     return (
       <div className="project-preview preview-web" data-preview="web">
         <Image
-          src={project.image!}
-          alt={`${project.title} application screenshot`}
-          width={1440}
-          height={850}
-          sizes="(max-width:700px) 90vw, 760px"
+          src={screen?.src ?? project.image!}
+          alt={
+            screen?.caption
+              ? `${project.title} ${screen.name.toLowerCase()} · ${screen.caption}`
+              : `${project.title} application screenshot`
+          }
+          width={screen?.width ?? 1440}
+          height={screen?.height ?? 850}
+          sizes="(max-width:700px) 90vw, 1000px"
         />
       </div>
     );

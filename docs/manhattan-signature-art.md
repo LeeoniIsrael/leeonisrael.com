@@ -1,0 +1,16 @@
+# Manhattan signature
+
+Generated using the built-in image_gen tool on October 2, 2026. The selected transparent output is encoded at original dimensions, WebP quality 92, as `public/images/footer-midtown-sketch.webp`. The refined variant was not selected. Typography and scroll masks are live SVG in `components/ui/skyline-signature.tsx`; they use the site's actual Inter font. This is an architectural interpretation, not a measured geographic drawing.
+
+Reference research: [Hudson-facing Midtown skyline](https://www.livinthehighline.com/buildings/). The earlier composite bridge graphic is no longer used.
+
+The skyline mast and connection align at SVG x=887. The generated image is placed at y=230; the antenna starts near y=407. The capital I uses the measured contour of Inter at 160px (14.844px stem, 116.406px height), extended as one tapered outline down to y=426. There is no separate wire or joint at the letter baseline. The same hatch, silver-blue contour, grain, and opacity apply to the name and extended mast. A vertical material mask feathers the last 56px into the existing pencil antenna.
+
+The stem reveals bottom-to-top through a feathered mask, overlapping with the outward reveal of the remaining name. Smoothstep timing and a heavily damped spring soften changes in scroll velocity without overshoot, pinning, or scroll interception. The native reduced-motion preference jumps the shared progress to the finished state, including on preference changes. Desktop and mobile share the same artwork geometry; mobile crops peripheral buildings only.
+
+## Selected generation prompt
+
+Original architectural sketch for a New York portfolio footer, wide 2:1 landscape, transparent background.
+Draw a geographically plausible Midtown Manhattan skyline as seen looking east from the Hudson River/Hoboken, dominated by ONE accurately proportioned Empire State Building exactly at horizontal center. Its long, fine antenna tip is precisely at 50% image width and 25% image height. Recognizable Art Deco stepped shoulders, tall slender rectangular shaft, narrow tiered crown and mast. Dense low rectangular West Side blocks at the waterfront, taller Midtown towers behind, contemporary Hudson Yards glass masses toward the left, Chrysler crown faint and small in the distance left of Empire State. Simplify secondary buildings to avoid an invented city. No Brooklyn Bridge, no suspension bridge, no One World Trade Center, no duplicate Empire State, no fantasy repeated crowns. This is Midtown, not a composite of Downtown and Midtown.
+Style: spare and exceptionally beautiful hand-drawn architectural pencil/engraving sketch, fine pale silver-blue #d8e4f2 strokes, mostly open building outlines with a few thin vertical window lines and delicate hatch marks. No heavy opaque building fills. Consistent graphite-like line material, quiet expert architectural drawing, restrained detail. Skyline occupies the lower 70%; transparent sky, transparent background behind buildings. Empire antenna ends cleanly at the designated tip, so live website typography can grow from it above. Only a few horizontal river lines at bottom. NO TEXT, NO letters, NO logo, NO frame, NO blue background, no photographic texture or 3D. Truly transparent PNG. Keep all buildings fully within the image, with ample blank sky above the tip.
+

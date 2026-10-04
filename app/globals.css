@@ -248,7 +248,7 @@ h2 {
 }
 .nav-inner {
   height: 82px;
-  max-width: 1352px;
+  max-width: 1600px;
   padding: 0 56px;
   margin: auto;
   display: flex;
@@ -454,7 +454,7 @@ h2 {
 .container-scroll {
   height: auto;
   position: relative;
-  max-width: 1600px;
+  max-width: 1352px;
   margin: auto;
 }
 .scroll-feature {
@@ -465,7 +465,7 @@ h2 {
   align-items: center;
   gap: 50px;
   overflow: clip;
-  padding: 35px max(56px, calc((100vw - 1240px) / 2)) 35px;
+  padding: 35px 56px 35px;
 }
 .scroll-heading {
   position: relative;
@@ -1168,12 +1168,6 @@ h2 {
   font-size: 13px;
   color: var(--muted-foreground);
 }
-@media (min-width: 1600px) {
-  .scroll-feature {
-    padding-left: 180px;
-    padding-right: 180px;
-  }
-}
 @media (max-width: 1050px) {
   .section-wrap {
     width: calc(100% - 70px);
@@ -1743,10 +1737,21 @@ h2 {
   padding: 24px;
 }
 .preview-web img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
   object-fit: contain;
   display: block;
+  border-radius: 14px;
+}
+.index-web .preview-web img {
+  border-radius: 6px;
+}
+.peek-web .preview-web img {
+  border-radius: 8px;
 }
 .project-logo {
   width: 112px;
@@ -1784,7 +1789,7 @@ h2 {
   padding: 0;
 }
 .index-mobile .preview-phone {
-  width: 38px;
+  width: auto;
   height: 82px;
   border-width: 1px;
   border-radius: 5px;
@@ -1823,10 +1828,13 @@ h2 {
 }
 
 .site-footer {
+  --footer-background: #183b70;
+  --footer-foreground: #eff4fa;
+  --footer-muted: #cbd8eb;
   position: relative;
   overflow: hidden;
-  background: #183b70;
-  color: #eff4fa;
+  background: var(--footer-background);
+  color: var(--footer-foreground);
   margin-top: 60px;
 }
 .footer-content {
@@ -1861,8 +1869,8 @@ h2 {
   white-space: nowrap;
 }
 .footer-cta:hover {
-  color: #183b70;
-  background: #eff4fa;
+  color: var(--footer-background);
+  background: var(--footer-foreground);
 }
 .footer-cta svg,
 .footer-baseline svg {
@@ -1887,25 +1895,25 @@ h2 {
 }
 .footer-wordmark span {
   font-size: 20px;
-  color: #c6d9f1;
+  color: var(--footer-muted);
 }
 .footer-identity p {
   margin-top: 17px;
   font-size: 14px;
   line-height: 1.7;
-  color: #cbd8eb;
+  color: var(--footer-muted);
 }
 .footer-location {
   display: block;
   margin-top: 20px;
   font-size: 12px;
-  color: #cbd8eb;
+  color: var(--footer-muted);
 }
 .footer-columns h3 {
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 20px;
-  color: #cbd8eb;
+  color: var(--footer-muted);
 }
 .footer-columns nav a {
   display: flex;
@@ -1923,7 +1931,7 @@ h2 {
   font-size: 14px;
   line-height: 1.7;
   max-width: 250px;
-  color: #cbd8eb;
+  color: var(--footer-muted);
 }
 .footer-email-row {
   display: flex;
@@ -1934,7 +1942,7 @@ h2 {
 }
 .footer-email-row button {
   background: #ffffff0d;
-  color: #eff4fa;
+  color: var(--footer-foreground);
   border: 1px solid #ffffff30;
   border-radius: 5px;
   padding: 8px;
@@ -1949,7 +1957,7 @@ h2 {
   display: block;
   min-height: 20px;
   font-size: 11px;
-  color: #cbd8eb;
+  color: var(--footer-muted);
   margin-top: 7px;
 }
 .footer-baseline {
@@ -1958,7 +1966,7 @@ h2 {
   border-top: 1px solid #ffffff30;
   padding: 22px 0 0;
   font-size: 11px;
-  color: #cbd8eb;
+  color: var(--footer-muted);
 }
 .footer-baseline a {
   display: flex;
@@ -1986,16 +1994,16 @@ h2 {
   left: 0;
   right: 0;
   height: 35%;
-  background: linear-gradient(#183b70, transparent);
+  background: linear-gradient(var(--footer-background), transparent);
 }
 .footer-art-caption {
   position: absolute;
   bottom: 18px;
   right: max(35px, calc((100vw - 1240px) / 2));
-  background: #183b70d9;
+  background: color-mix(in srgb, var(--footer-background) 85%, transparent);
   border-radius: 4px;
   padding: 5px 8px;
-  color: #eff4fa;
+  color: var(--footer-foreground);
   font-size: 10px;
 }
 .site-footer :focus-visible {
@@ -2009,7 +2017,7 @@ h2 {
 }
 @media (max-width: 700px) {
   .index-mobile .preview-phone {
-    width: 30px;
+    width: auto;
     height: 65px;
   }
   .index-mobile {
@@ -2368,5 +2376,1204 @@ h2 {
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
+  }
+}
+
+/* Featured media uses the same full-screen framing as the project index. */
+.feature-media > .project-preview {
+  background: transparent;
+}
+.feature-media .preview-web img {
+  transition: transform 0.35s var(--ease);
+}
+.feature-media:hover .preview-web img,
+.feature-media:focus-visible .preview-web img {
+  transform: scale(1.025);
+}
+.feature-signify .feature-media {
+  aspect-ratio: 0.9;
+  background: var(--surface);
+}
+.feature-signify .preview-mobile {
+  padding: 0;
+}
+.app-screen {
+  aspect-ratio: 1206 / 2622;
+}
+.app-screen img {
+  object-fit: contain;
+}
+
+/* Three mobile products: shared framing, distinct motions tied to ordinary scroll. */
+.mobile-showcase {
+  max-width: 1352px;
+  margin-inline: auto;
+  position: relative;
+}
+.showcase-inner {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: center;
+  gap: 50px;
+  padding: 55px 56px;
+  min-height: 690px;
+  overflow: clip;
+}
+.showcase-onhand .showcase-inner {
+  grid-template-columns: 1.2fr 0.8fr;
+}
+.showcase-onhand .showcase-copy {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+.showcase-onhand .showcase-stage {
+  grid-column: 1;
+  grid-row: 1;
+}
+.showcase-stage {
+  height: 580px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.showcase-phone {
+  position: absolute;
+  width: min(190px, 15vw);
+  border: 4px solid #232b36;
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 0;
+  background: #0e141c;
+  box-shadow: 0 20px 36px -24px #0009;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.2s;
+}
+.showcase-phone img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+.showcase-phone-center {
+  z-index: 2;
+}
+.showcase-phone-side {
+  z-index: 1;
+}
+.showcase-phone:hover,
+.showcase-phone:focus-visible {
+  border-color: #6b7e96;
+  box-shadow: 0 24px 40px -20px #0009;
+}
+.showcase-stage .capture-caption {
+  bottom: -10px;
+}
+.projects-section > .section-wrap:last-child {
+  padding-top: 100px;
+}
+.showcase-onhand .showcase-stage {
+  height: 620px;
+}
+.showcase-onhand .showcase-phone {
+  width: min(180px, 15vw);
+}
+@media (max-width: 1100px) {
+  .showcase-inner,
+  .showcase-onhand .showcase-inner {
+    padding-inline: 35px;
+    gap: 25px;
+  }
+  .showcase-phone {
+    width: min(170px, 16vw);
+  }
+}
+@media (max-width: 700px) {
+  .showcase-inner,
+  .showcase-onhand .showcase-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 35px 24px 45px;
+    gap: 12px;
+    min-height: 0;
+  }
+  .showcase-copy {
+    max-width: 400px;
+  }
+  .showcase-stage {
+    height: 420px;
+  }
+  .showcase-phone {
+    width: min(32vw, 148px);
+    border-width: 3px;
+    border-radius: 18px;
+  }
+  .showcase-stage .capture-caption {
+    bottom: 0;
+  }
+  .projects-section > .section-wrap:last-child {
+    padding-top: 50px;
+  }
+}
+@media (max-width: 700px) {
+  .showcase-onhand .showcase-stage {
+    height: 480px;
+  }
+  .showcase-onhand .showcase-phone {
+    width: min(30vw, 128px);
+  }
+}
+
+/* Shared device geometry and a reserved media column prevent cross-column overlap. */
+.projects-section {
+  --showcase-phone-width: 210px;
+}
+.projects-section .scroll-feature,
+.projects-section .showcase-inner {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr);
+  gap: 64px;
+  padding: 45px 56px;
+  min-height: 0;
+}
+.projects-section .showcase-onhand .showcase-inner {
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.8fr);
+}
+.scroll-heading {
+  min-width: 0;
+}
+.projects-section .scroll-stage,
+.projects-section .showcase-stage {
+  height: calc(var(--showcase-phone-width) * 844 / 390 + 140px);
+  min-width: 0;
+  overflow: clip;
+}
+.projects-section .scroll-card {
+  height: 100%;
+}
+.projects-section .app-screen,
+.projects-section .showcase-phone {
+  width: var(--showcase-phone-width);
+  aspect-ratio: 390 / 844;
+  border: 4px solid #232b36;
+  border-radius: 28px;
+}
+.iphone-frame {
+  position: relative;
+  aspect-ratio: 390 / 844;
+  background: #0e141c;
+}
+.iphone-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.iphone-island {
+  position: absolute;
+  top: 1.6%;
+  left: 36%;
+  width: 28%;
+  height: 2.7%;
+  border-radius: 999px;
+  background: #060809;
+  box-shadow: inset 0 0 0 1px #ffffff0a;
+  pointer-events: none;
+}
+.projects-section .app-screen,
+.projects-section .showcase-phone {
+  position: absolute;
+}
+.projects-section .capture-caption {
+  bottom: 8px;
+}
+@media (max-width: 1200px) {
+  .projects-section {
+    --showcase-phone-width: 175px;
+  }
+  .projects-section .scroll-feature,
+  .projects-section .showcase-inner,
+  .projects-section .showcase-onhand .showcase-inner {
+    gap: 40px;
+    padding-inline: 35px;
+  }
+}
+@media (max-width: 1000px) {
+  .projects-section {
+    --showcase-phone-width: min(210px, 28vw);
+  }
+  .projects-section .scroll-feature,
+  .projects-section .showcase-inner,
+  .projects-section .showcase-onhand .showcase-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 35px 35px 40px;
+    gap: 24px;
+  }
+  .projects-section .showcase-onhand .showcase-copy {
+    align-self: stretch;
+  }
+  .projects-section .scroll-heading {
+    max-width: 540px;
+  }
+  .projects-section .scroll-heading .feature-detail {
+    max-width: 500px;
+  }
+}
+@media (max-width: 700px) {
+  .projects-section {
+    --showcase-phone-width: min(31vw, 148px);
+  }
+  .projects-section .scroll-feature,
+  .projects-section .showcase-inner,
+  .projects-section .showcase-onhand .showcase-inner {
+    padding-inline: 24px;
+    gap: 20px;
+  }
+  .projects-section .app-screen,
+  .projects-section .showcase-phone {
+    border-width: 3px;
+    border-radius: 19px;
+  }
+}
+
+/* ONHAND's supplied captures start at the app header; reserve space for the device island. */
+.iphone-frame img.iphone-content-without-status {
+  box-sizing: border-box;
+  padding-top: 10%;
+  padding-bottom: 3%;
+}
+
+/* Responsive commissioned skyline/name artwork, with no cropping of the connection. */
+.footer-panorama {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+.footer-panorama picture {
+  display: block;
+}
+.footer-panorama img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+.footer-panorama::before {
+  height: 8%;
+  z-index: 1;
+  pointer-events: none;
+}
+.footer-panorama::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--footer-background),
+    transparent 5%,
+    transparent 95%,
+    var(--footer-background)
+  );
+  pointer-events: none;
+}
+@media (max-width: 700px) {
+  .footer-panorama img {
+    aspect-ratio: 1;
+    height: auto;
+  }
+  .footer-panorama::before {
+    height: 6%;
+  }
+}
+
+/* Web previews show the original interface without added browser chrome. */
+.preview-web {
+  padding: 24px;
+}
+.index-web {
+  border: 0;
+  overflow: visible;
+}
+.index-web .preview-web {
+  padding: 0;
+  background: transparent;
+}
+.peek-web .preview-web {
+  padding: 7px;
+}
+.inspection-web .preview-web {
+  padding: 0;
+}
+@media (max-width: 700px) {
+  .dialog-web .preview-web {
+    padding: 12px;
+  }
+}
+
+/* A full-width city band beneath a simple, separate signature. */
+.skyline-signature {
+  max-width: none;
+  width: 100%;
+  padding-top: 32px;
+  margin: 0;
+}
+.skyline-signature::before,
+.skyline-signature::after {
+  content: none;
+}
+.footer-signature-name {
+  display: block;
+  width: min(900px, 82%);
+  height: auto;
+  margin: 0 auto 24px;
+  color: var(--footer-foreground);
+  overflow: visible;
+}
+.skyline-signature .signature-city {
+  display: block;
+  width: 100%;
+  height: max(160px, 30.38vw);
+  overflow: hidden;
+  color: var(--footer-foreground);
+}
+@media (max-width: 700px) {
+  .skyline-signature {
+    padding-top: 24px;
+  }
+  .footer-signature-name {
+    margin-bottom: 16px;
+  }
+}
+
+/* The portrait uses the foreground color, so its ink reverses with the theme. */
+.portrait-wordmark {
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: normal;
+}
+.wordmark > .nav-portrait {
+  display: block;
+  width: 48px;
+  height: 48px;
+  background: var(--foreground);
+  -webkit-mask: url("/images/leeon-nav-sketch.png") center / contain no-repeat;
+  mask: url("/images/leeon-nav-sketch.png") center / contain no-repeat;
+  transition: transform 0.24s var(--ease);
+}
+.portrait-wordmark:hover .nav-portrait {
+  transform: rotate(-5deg);
+}
+@media (max-width: 700px) {
+  .portrait-wordmark {
+    width: 44px;
+    height: 44px;
+  }
+  .wordmark > .nav-portrait {
+    width: 42px;
+    height: 42px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-wordmark:hover .nav-portrait {
+    transform: none;
+  }
+}
+
+/* The portrait expands into a temporary drawing surface, then returns untouched. */
+.portrait-invitation {
+  width: min(100%, 280px);
+  margin-top: 35px;
+}
+.portrait-trigger {
+  position: relative;
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+.portrait-trigger img {
+  transition: transform 0.5s var(--ease);
+}
+.portrait-trigger:hover img {
+  transform: scale(1.035);
+}
+.portrait-hover {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 7px;
+  background: rgba(244, 245, 244, 0.88);
+  backdrop-filter: blur(8px);
+  color: #232725;
+  font-size: 12px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity 0.2s,
+    transform 0.3s var(--ease);
+}
+.portrait-trigger:hover .portrait-hover,
+.portrait-trigger:focus-visible .portrait-hover {
+  opacity: 1;
+  transform: none;
+}
+.portrait-note {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 7px 0 0 auto;
+  padding: 0 4px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  cursor: pointer;
+}
+.portrait-note svg {
+  margin-top: -7px;
+}
+.portrait-note:hover {
+  color: var(--foreground);
+}
+.portrait-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--foreground);
+}
+.portrait-dialog::backdrop {
+  background: transparent;
+}
+.portrait-backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--background) 65%, transparent);
+}
+.portrait-studio {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.portrait-paper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 20px 80px #00000024;
+}
+.portrait-paper img {
+  object-fit: cover;
+  object-position: 50% 35%;
+  user-select: none;
+}
+.portrait-paper canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+.portrait-paper canvas.is-erasing {
+  cursor: cell;
+}
+.portrait-studio-heading {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.portrait-studio-heading h2 {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  margin: 0;
+}
+.portrait-studio-heading p {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 4px 0 0;
+}
+.portrait-controls {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.portrait-tools {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+}
+.portrait-tool,
+.portrait-swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.15s;
+}
+.portrait-tool:hover,
+.portrait-swatch:hover {
+  background: var(--surface);
+}
+.portrait-tool:active,
+.portrait-swatch:active,
+.portrait-glasses:active {
+  transform: scale(0.93);
+}
+.portrait-tool[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--primary);
+}
+.portrait-tool:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+.portrait-swatch span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid #23272530;
+}
+.portrait-swatch[aria-pressed="true"] span {
+  outline: 1px solid var(--foreground);
+  outline-offset: 4px;
+}
+.portrait-tool-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 2px;
+}
+.portrait-glasses {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.15s;
+}
+.portrait-glasses:hover {
+  background: var(--surface);
+}
+.portrait-reset-note {
+  width: 100%;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  margin: 2px 0 0;
+}
+@media (max-width: 480px) {
+  .portrait-controls {
+    justify-content: center;
+  }
+  .portrait-tools {
+    gap: 1px;
+  }
+  .portrait-tool,
+  .portrait-swatch {
+    width: 31px;
+    height: 31px;
+  }
+  .portrait-glasses {
+    padding: 10px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-trigger img,
+  .portrait-hover,
+  .portrait-tool,
+  .portrait-swatch,
+  .portrait-glasses {
+    transition: none;
+  }
+}
+@media (max-height: 559px) and (min-aspect-ratio: 1/1) {
+  .portrait-controls {
+    top: 0;
+    left: calc(100% + 20px);
+    right: auto;
+    width: 190px;
+    justify-content: center;
+  }
+  .portrait-tools {
+    gap: 1px;
+  }
+  .portrait-tool,
+  .portrait-swatch {
+    width: 28px;
+    height: 32px;
+  }
+}
+@media (max-height: 559px) and (min-aspect-ratio: 1/1) {
+  .portrait-studio-heading {
+    right: auto;
+    width: calc(100% + 210px);
+  }
+}
+
+/* Light mode keeps the blue signature; dark mode uses neutral graphite. */
+[data-theme="dark"] .site-footer {
+  --footer-background: #101411;
+  --footer-foreground: #e9ece8;
+  --footer-muted: #b7c0b9;
+}
+[data-theme="dark"] .skyline-signature svg {
+  filter: grayscale(1);
+}
+
+/* A single physical iPhone shell; scene motion belongs to the outer button. */
+.iphone-frame,
+.projects-section .app-screen.iphone-frame,
+.projects-section .showcase-phone.iphone-frame {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+  box-shadow: none;
+}
+.iphone-device {
+  --device-screen: #0d141c;
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2.2%;
+  border-radius: 14% / 6.5%;
+  background: #151719;
+  box-shadow:
+    inset 0 0 0 1px #8b9198,
+    inset 0 0 0 2px #33383e,
+    0 22px 38px -22px #0009;
+  transition: box-shadow 180ms ease;
+}
+.iphone-frame:hover .iphone-device,
+.iphone-frame:focus-visible .iphone-device {
+  box-shadow:
+    inset 0 0 0 1px #b5bcc4,
+    inset 0 0 0 2px #48505a,
+    0 26px 42px -20px #0009;
+}
+.iphone-device-light {
+  --device-screen: #eef0ef;
+}
+.iphone-device-onhand {
+  --device-screen: #101112;
+}
+.iphone-device img.iphone-content-without-status {
+  padding-top: 18%;
+  padding-bottom: 6%;
+}
+.iphone-display {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12.5% / 5.8%;
+  overflow: hidden;
+  background: var(--device-screen);
+}
+.iphone-status {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 7.6%;
+  background: var(--device-screen);
+  pointer-events: none;
+}
+.iphone-status svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.iphone-status-dark {
+  color: #f6f7f8;
+}
+.iphone-status-light {
+  color: #101311;
+}
+.iphone-display .iphone-island {
+  top: 1.8%;
+  left: 35%;
+  width: 30%;
+  height: 3.2%;
+  background: #050607;
+}
+.iphone-island > span {
+  position: absolute;
+  right: 9%;
+  top: 29%;
+  width: 8%;
+  height: 40%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #233042, #090d12 65%);
+}
+.iphone-home {
+  position: absolute;
+  bottom: 1.1%;
+  left: 33%;
+  width: 34%;
+  height: 0.55%;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Glasses stay registered to the portrait, independently of the drawing canvas. */
+.portrait-glasses-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.portrait-glasses:disabled {
+  cursor: default;
+  color: var(--muted-foreground);
+  background: var(--surface);
+  transform: none;
+}
+
+/* Portrait-led hero adapted from the supplied minimalist composition. */
+.minimalist-hero {
+  --hero-circle: #d6e0ef;
+  padding: 100px 56px 40px;
+  min-height: min(900px, calc(100svh - 80px));
+  display: flex;
+  overflow: clip;
+}
+[data-theme="dark"] .minimalist-hero {
+  --hero-circle: #343b36;
+}
+.minimalist-shell {
+  max-width: 1240px;
+  width: 100%;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+}
+.minimalist-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 12px;
+}
+.minimalist-logo {
+  font-size: 20px;
+  font-weight: 650;
+}
+.minimalist-navigation {
+  display: flex;
+  gap: 32px;
+}
+.minimalist-navigation a {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+.minimalist-menu {
+  display: none;
+}
+.minimalist-mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--background);
+  padding: 20px;
+  z-index: 5;
+  display: grid;
+  gap: 20px;
+}
+.minimalist-composition {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.15fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 28px;
+  flex: 1;
+  min-height: 580px;
+  padding-block: 35px 55px;
+}
+.minimalist-intro {
+  position: relative;
+  z-index: 3;
+  max-width: 270px;
+}
+.minimalist-intro p {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--muted-foreground);
+}
+.minimalist-read-more {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 24px;
+  font-size: 14px;
+}
+.minimalist-read-more::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  bottom: -5px;
+  left: 0;
+  transition: width 200ms var(--ease);
+}
+.minimalist-read-more:hover::after {
+  width: 108px;
+}
+.minimalist-art {
+  position: relative;
+  min-width: 0;
+  height: clamp(400px, 38vw, 500px);
+  z-index: 1;
+}
+.minimalist-circle-travel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.minimalist-circle {
+  position: relative;
+  overflow: hidden;
+  width: 118%;
+  max-width: 500px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--hero-circle);
+  mask-image: linear-gradient(
+    to bottom,
+    #000 62%,
+    rgb(0 0 0 / 90%) 72%,
+    rgb(0 0 0 / 45%) 86%,
+    transparent 100%
+  );
+}
+.minimalist-portrait-travel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.minimalist-portrait {
+  width: 100%;
+  flex-shrink: 0;
+  max-width: 490px;
+}
+.minimalist-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+.minimalist-name {
+  position: relative;
+  z-index: 2;
+  padding-left: 5px;
+}
+.minimalist-name h1 {
+  font-size: clamp(76px, 8.4vw, 122px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.07em;
+}
+.minimalist-name h1 span {
+  display: block;
+}
+.minimalist-baseline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 40px;
+  font-size: 13px;
+}
+.minimalist-socials {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.minimalist-socials a {
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.minimalist-socials a:hover {
+  color: var(--foreground);
+}
+.minimalist-resume {
+  margin-left: 4px;
+}
+.minimalist-explore {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+}
+.minimalist-explore svg {
+  transition: transform 220ms var(--ease);
+}
+.minimalist-explore:hover svg {
+  transform: translateY(4px);
+}
+.minimalist-location {
+  color: var(--muted-foreground);
+}
+@media (min-width: 1700px) {
+  .minimalist-hero {
+    min-height: min(960px, calc(100svh - 80px));
+  }
+}
+@media (max-width: 1100px) {
+  .minimalist-hero {
+    padding-inline: 35px;
+  }
+  .minimalist-composition {
+    gap: 20px;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.1fr) minmax(0, 1fr);
+    min-height: 530px;
+  }
+  .minimalist-intro p {
+    font-size: 14px;
+  }
+  .minimalist-name h1 {
+    font-size: clamp(66px, 8.4vw, 92px);
+  }
+}
+@media (max-width: 800px) {
+  .minimalist-hero {
+    padding: 110px 24px 32px;
+    min-height: auto;
+  }
+  .minimalist-composition {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    padding: 0 0 40px;
+  }
+  .minimalist-art {
+    grid-column: 1;
+    grid-row: 1;
+    height: 380px;
+  }
+  .minimalist-name {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist-name h1 {
+    font-size: clamp(66px, 10vw, 90px);
+  }
+  .minimalist-intro {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: 450px;
+    padding-top: 15px;
+  }
+  .minimalist-intro p {
+    font-size: 15px;
+  }
+  .minimalist-circle {
+    width: 105%;
+  }
+  .minimalist-portrait {
+    width: 100%;
+  }
+  .minimalist-navigation {
+    display: none;
+  }
+  .minimalist-menu {
+    display: inline-flex;
+  }
+}
+@media (max-width: 520px) {
+  .minimalist-hero {
+    padding-top: 92px;
+  }
+  .minimalist-composition {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 32px;
+    min-height: 0;
+  }
+  .minimalist-art {
+    order: 1;
+    width: min(300px, 85vw);
+    height: 330px;
+    align-self: center;
+    margin-top: 20px;
+  }
+  .minimalist-name {
+    order: 0;
+    width: 100%;
+    padding: 0;
+  }
+  .minimalist-name h1 {
+    font-size: clamp(50px, 13vw, 68px);
+    line-height: 1;
+    letter-spacing: -0.065em;
+    text-align: center;
+  }
+  .minimalist-name h1 span {
+    display: inline;
+  }
+  .minimalist-intro {
+    order: 2;
+    max-width: 360px;
+    padding-top: 26px;
+    align-self: center;
+  }
+  .minimalist-intro p {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .minimalist-read-more {
+    margin-top: 18px;
+  }
+  .minimalist-baseline {
+    flex-wrap: wrap;
+    gap: 24px 12px;
+    font-size: 12px;
+  }
+  .minimalist-socials {
+    gap: 18px;
+  }
+  .minimalist-location {
+    margin-left: auto;
+  }
+  .minimalist-explore {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    padding-top: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .minimalist-read-more::after,
+  .minimalist-explore svg {
+    transition: none;
+  }
+}
+
+.leeon-wordmark {
+  font-size: 28px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.055em;
+  padding-block: 8px;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color 180ms ease;
+}
+.leeon-wordmark:hover {
+  text-decoration-color: currentColor;
+}
+@media (max-width: 700px) {
+  .leeon-wordmark {
+    font-size: 25px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .leeon-wordmark {
+    transition: none;
+  }
+}
+
+/* The hero is the sole page portrait and opens the temporary drawing studio. */
+.hero-portrait-invitation {
+  position: relative;
+  width: 118%;
+  max-width: 500px;
+  margin: 0;
+}
+.hero-portrait-trigger {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border-radius: 50%;
+}
+.hero-portrait-trigger .minimalist-circle {
+  width: 100%;
+}
+.hero-portrait-invitation .portrait-note {
+  position: absolute;
+  right: 5%;
+  bottom: -25px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  white-space: nowrap;
+}
+.about-grid {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: start;
+}
+.about-grid h2 {
+  max-width: 440px;
+}
+.about-copy {
+  max-width: 610px;
+}
+@media (max-width: 800px) {
+  .hero-portrait-invitation {
+    width: 105%;
+  }
+}
+@media (max-width: 700px) {
+  .about-grid {
+    grid-template-columns: 1fr;
   }
 }

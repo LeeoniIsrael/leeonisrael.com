@@ -1,0 +1,21 @@
+# Skyline and name artwork
+
+Generated with the built-in image_gen tool on October 2, 2026. Project assets: `public/images/footer-skyline-name.webp` and `public/images/footer-skyline-name-mobile.webp`, WebP quality 92, original dimensions. The earlier waterfront graphic was used as a style reference.
+
+## Desktop prompt
+
+Use case: illustration-story / architectural brand artwork.
+Asset type: original premium website footer artwork, wide landscape 2:1 aspect, high resolution.
+Primary request: A meticulously crafted pale silver-blue copperplate etching of the New York skyline and Brooklyn Bridge, with the owner's name visually joined to the Empire State Building. The attached existing image is a STYLE reference only: its fine architectural linework, ink-blue background, waterfront, understated composition. Create a fresh composition.
+Typography (exact verbatim): "Leeon Israel". Spell L-e-e-o-n, I-s-r-a-e-l. Large refined modern sans-serif, medium weight, sentence case, immaculate proportions, solid pale silver-blue. One single line across the upper third, centered with 9% side margins. No other text.
+The most important detail: The capital I at the start of Israel must form a continuous vertical connection with the antenna/spire of the Empire State Building directly beneath it. Make the I a simple straight vertical sans-serif stem; its lower end extends downward into a delicate architectural spire, then into the recognizable stepped Art Deco crown and facade of the Empire State Building. This is a deliberate graphic fusion of letter and architecture, elegant and unmistakable. Other letters remain separate from buildings. The connecting building should rise above the surrounding skyline. No random line joining another letter.
+Composition: name upper third; precise skyline lower half; Brooklyn Bridge enters from lower-left, river at bottom. Clean deep ink-blue #183b70 background especially at all outer edges, no gradient vignette or visible paper edge. Fine silver-blue #d8e4f2 engraving strokes with subtle blue paper grain. Crisp, extraordinarily detailed architecture, restrained texture, no photorealism, no 3D, no orange, no beige, no glow, no UI, no watermark. The image should look like an original piece of commissioned graphic design, with generous blue breathing space but the typography and skyline connected as one coherent artwork. Ensure the complete name and bridge fit within the image.
+
+## Mobile prompt
+
+Create a square mobile composition of the attached original footer artwork, for the same portfolio website. Keep exactly the same ink-blue #183b70 and pale silver-blue engraved architectural style, meticulous fine copperplate linework, modern clean sans-serif letterforms, calm professional mood.
+Exact text: "Leeon" on the first line and "Israel" on the second line, spelled L-e-e-o-n and I-s-r-a-e-l. Center both lines with equal visual width, large and highly legible, 10% side margins. Name occupies top 40% of the square.
+Critical graphic detail: the bottom of the capital I at the beginning of Israel (left side of second line) MUST extend continuously down into the antenna and stepped crown of a recognizable Empire State Building directly below it. The building and letter should be one connected vertical form, similar to the attached design. Place the Empire State Building under the I at about 16% horizontal position, taller than neighboring buildings. Make this connection clear and elegant. No other letters touch buildings.
+Lower 55%: richly detailed New York skyline and East River, with Brooklyn Bridge entering from right and crossing lower foreground. A composed artistic panorama, not geographically exact. Thin silver-blue etching strokes, subtly textured ink-blue background, uncluttered name area. Background matches #183b70 at outer edges so it sits beautifully within a blue website footer.
+No extra text, no watermark, no serif font, no orange or beige, no gradients/glow/3D. The complete name and skyline must be visible and balanced in a square with no content near the extreme edges.
+

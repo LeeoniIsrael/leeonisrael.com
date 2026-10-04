@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, ArrowUpRight, Check, Copy } from "lucide-react";
-import Image from "next/image";
+import { SkylineSignature } from "@/components/ui/skyline-signature";
 
 export default function Footer() {
   const [copied, setCopied] = useState(false);
@@ -92,16 +92,7 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <div className="footer-panorama" aria-hidden="true">
-        <Image
-          src="/images/footer-waterfront.webp"
-          alt=""
-          width={1536}
-          height={512}
-          sizes="100vw"
-        />
-        <span className="footer-art-caption">A view from New York.</span>
-      </div>
+      <SkylineSignature />
     </footer>
   );
 }

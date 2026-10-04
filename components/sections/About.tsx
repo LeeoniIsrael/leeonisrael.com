@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Plus } from "lucide-react";
@@ -42,15 +41,6 @@ export default function About() {
             An engineer’s perspective.
             <br />A product mindset.
           </h2>
-          <div className="about-portrait">
-            <Image
-              src="/images/leeon-israel.webp"
-              alt="Leeon Israel"
-              width={1400}
-              height={1400}
-              sizes="(max-width:700px) 70vw, 280px"
-            />
-          </div>
         </div>
         <div className="about-copy">
           <p>

@@ -6,7 +6,8 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion";
-import Image from "next/image";
+import { PhoneScreen } from "./phone-screen";
+import { projectScreens } from "@/lib/project-screens";
 export function ContainerScroll({
   titleComponent,
   children,
@@ -29,7 +30,7 @@ export function ContainerScroll({
   const centerY = useTransform(scrollYProgress, [0, 0.8], [70, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.85], [0.82, 1]);
   return (
-    <div ref={ref} className="container-scroll">
+    <div ref={ref} className="container-scroll" data-showcase="kavanah">
       <div className="scroll-feature">
         <div className="scroll-heading">{titleComponent}</div>
         <div className="scroll-stage">
@@ -39,54 +40,36 @@ export function ContainerScroll({
           >
             <motion.button
               type="button"
-              aria-label="View Kavanah reading preferences screen"
+              aria-label="View Kavanah siddur screen"
               onClick={() => onOpenScreen?.(1)}
-              className="app-screen app-screen-left"
+              className="app-screen iphone-frame app-screen-left"
               style={{
                 x: reduced ? "-58%" : leftX,
                 rotate: reduced ? -12 : leftR,
               }}
             >
-              <Image
-                src="/images/kavanah-preferences.webp"
-                alt="Kavanah reading preferences, captured from the app"
-                width={780}
-                height={1688}
-                sizes="(max-width:700px) 42vw, 22vw"
-              />
+              <PhoneScreen screen={projectScreens.kavanah[1]} title="Kavanah" />
             </motion.button>
             <motion.button
               type="button"
-              aria-label="View Kavanah prayer tradition screen"
+              aria-label="View Kavanah prayer reader screen"
               onClick={() => onOpenScreen?.(2)}
-              className="app-screen app-screen-right"
+              className="app-screen iphone-frame app-screen-right"
               style={{
                 x: reduced ? "58%" : rightX,
                 rotate: reduced ? 12 : rightR,
               }}
             >
-              <Image
-                src="/images/kavanah-tradition.webp"
-                alt="Kavanah prayer tradition selection, captured from the app"
-                width={780}
-                height={1688}
-                sizes="(max-width:700px) 42vw, 22vw"
-              />
+              <PhoneScreen screen={projectScreens.kavanah[2]} title="Kavanah" />
             </motion.button>
             <motion.button
               type="button"
-              aria-label="View Kavanah welcome screen"
+              aria-label="View Kavanah home screen"
               onClick={() => onOpenScreen?.(0)}
-              className="app-screen app-screen-center"
+              className="app-screen iphone-frame app-screen-center"
               style={{ y: reduced ? 0 : centerY }}
             >
-              <Image
-                src="/images/kavanah-welcome.webp"
-                alt="Kavanah welcome screen, captured from the app"
-                width={780}
-                height={1688}
-                sizes="(max-width:700px) 42vw, 22vw"
-              />
+              <PhoneScreen screen={projectScreens.kavanah[0]} title="Kavanah" />
             </motion.button>
           </motion.div>
           <span className="capture-caption">

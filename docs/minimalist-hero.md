@@ -1,0 +1,15 @@
+# Portrait hero, revision 25
+
+Adapted from the user's supplied 21st.dev MinimalistHero component by ravikatiyar162. Reusable component: components/ui/minimalist-hero.tsx; content: components/sections/Hero.tsx; scoped styles: app/globals.css. Existing TypeScript, Tailwind, shadcn aliases, Framer Motion, and Lucide dependencies required no setup changes.
+
+Design plan: chalk #f4f5f4, graphite #232725, slate #626b65, circle blue #d6e0ef, and ink #2943a3. Dark mode uses the existing #171b19 base and #343b36 charcoal circle. Inter Variable keeps body typography consistent and becomes a large, closely spaced two-line name. Desktop follows introduction / portrait / name; tablet puts the introduction below; mobile places the one-line name above the portrait. The portrait and name are the main visual focus. Navigation stays in the site's existing functional header; social links, resume, city, and work anchor complete the hero baseline.
+
+Review against the brief: replace the reference's placeholder person and slogans with Leeon's own portrait, name, UBS context, and engineering/product-management direction. Use blue instead of introducing unrelated yellow. Keep one brief entrance sequence plus restrained, normal-flow portrait/circle parallax. Honor reduced motion immediately. Remove the previous Name3D hero in accordance with the user's replacement request; its implementation remains available but unused.
+
+Asset: public/images/leeon-hero-cutout.webp, 1254×1254 RGBA, derived from /Users/leeoniisrael/Downloads/IMG_7849.jpeg. The existing about/drawing portrait remains unchanged. Built-in imagegen edit mode produced a transparent cutout; converted to WebP with alpha quality 100. Generated source: /Users/leeoniisrael/.codex/generated_images/01a0fabd-b578-7752-9f21-eaac25ae679d/exec-e667b61d-3a0e-4d7d-8ccb-5f69ea4410e5.png.
+
+Full imagegen prompt:
+
+Edit target: the supplied photograph of Leeon Israel. Remove ONLY the pale gray studio background, delivering a genuinely transparent RGBA cutout. Preserve the exact man's face, expression, hair, beard, white shirt, skin tone, pose, lighting, proportions and original photographic details. No retouching, no beautification, no new clothing, no drawn artwork, no glasses. Retain the complete head/hair and torso/shoulders within the existing image bounds. Professionally clean soft hair-edge alpha with no white halo. Intended use: a large real portrait over a CSS circle on a personal website hero. Transparent background; no shadows, no added background, no text.
+
+Revision 30 makes the hero portrait the only photo on the page. PortraitDoodle wraps the existing circle/portrait composition and opens the established drawing studio; dismissal returns focus to this hero button. Its quiet invitation sits outside the shared circle fade. About retains its complete biography, skills, and education in a balanced text-only layout. The original studio portrait is retained inside the temporary modal to preserve exact drawing and glasses alignment; closing removes every temporary mark.

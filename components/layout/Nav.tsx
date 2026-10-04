@@ -71,11 +71,11 @@ export default function Nav() {
       <div className="nav-inner">
         <a
           href="#home"
-          className="wordmark"
+          className="wordmark leeon-wordmark"
           aria-label="Leeon Israel, back to top"
           onClick={() => setOpen(false)}
         >
-          li<span>↗</span>
+          Leeon.
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
           {links.map((l) => (

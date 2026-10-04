@@ -2,13 +2,13 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import Image from "next/image";
 import { projects, type Project } from "@/lib/portfolio";
 import { ProjectDialog } from "@/components/ui/project-dialog";
 import { ProjectPeek } from "@/components/ui/project-peek";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { ProjectVisual, previewFormat } from "@/components/ui/project-visual";
-import { Reveal, Tilt } from "@/components/ui/motion";
+import { Reveal } from "@/components/ui/motion";
+import { ProjectShowcase } from "@/components/ui/project-showcase";
 const filters = ["All", "AI & agents", "Products", "Experiments"] as const;
 export default function Projects() {
   const [filter, setFilter] = useState<(typeof filters)[number]>("All");
@@ -62,50 +62,17 @@ export default function Projects() {
           </>
         }
       />
+      {["onhand", "signify"].map((id) => {
+        const project = projects.find((p) => p.id === id)!;
+        return (
+          <ProjectShowcase
+            key={id}
+            project={project}
+            onOpen={(screen) => open(project, screen ?? null)}
+          />
+        );
+      })}
       <div className="section-wrap">
-        <div className="selected-pair">
-          {["spotify", "signify"].map((id) => {
-            const p = projects.find((p) => p.id === id)!;
-            return (
-              <Reveal key={id} className={`feature-project feature-${id}`}>
-                <Tilt>
-                  <button
-                    className="feature-media"
-                    onClick={() => open(p)}
-                    aria-label={`Explore ${p.title}`}
-                  >
-                    <Image
-                      src={p.image!}
-                      alt={`${p.title} application screenshot`}
-                      width={1100}
-                      height={650}
-                      sizes="(max-width:700px) 90vw, 48vw"
-                    />
-                    <span className="media-action">
-                      Explore project <ArrowUpRight size={16} />
-                    </span>
-                  </button>
-                </Tilt>
-                <div className="feature-caption">
-                  <div>
-                    <span className="project-category">{p.category}</span>
-                    <h3>
-                      <button onClick={() => open(p)}>{p.title}</button>
-                    </h3>
-                    <p>{p.description.split(". ")[0]}.</p>
-                  </div>
-                  <button
-                    className="round-button"
-                    onClick={() => open(p)}
-                    aria-label={`Read about ${p.title}`}
-                  >
-                    <ArrowUpRight size={23} />
-                  </button>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
         <div className="project-heading">
           <div>
             <h2>The project index.</h2>

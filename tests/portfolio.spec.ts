@@ -100,14 +100,14 @@ test("Kavanah animates in normal page flow without pinning or scroll delay", asy
   expect(featureTopBefore - featureTopAfter).toBeCloseTo(finish - start, 0);
   // The next projects move into view with the same wheel movement, without a pinned runway.
   const nextTop = await page
-    .locator(".selected-pair")
+    .locator("[data-showcase=onhand]")
     .evaluate((el) => el.getBoundingClientRect().top);
   await page.mouse.wheel(0, 500);
   await expect
     .poll(() => page.evaluate(() => scrollY))
     .toBe(Math.round(finish) + 500);
   const nextTopAfter = await page
-    .locator(".selected-pair")
+    .locator("[data-showcase=onhand]")
     .evaluate((el) => el.getBoundingClientRect().top);
   expect(nextTop - nextTopAfter).toBeCloseTo(500, 0);
   await page.locator(".project-cover").first().hover();
@@ -164,43 +164,53 @@ test("mobile, dark mode, reduced motion, and keyboard controls remain usable", a
   expect(errors).toEqual([]);
 });
 
-test("production-style name depth follows the pointer and respects reduced motion", async ({
+test("portrait hero keeps the name, links, and mobile layout accessible", async ({
   page,
+  request,
 }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const name = page.locator(".name-3d");
-  await expect(page.locator(".hero-name")).toHaveCSS("opacity", "1");
-  await page.mouse.move(160, 150);
-  await expect
-    .poll(() => name.evaluate((el) => el.style.transform))
-    .toContain("rotateY");
-  const first = await name.evaluate((el) => ({
-    transform: el.style.transform,
-    shadow: el.style.textShadow,
-  }));
-  await page.mouse.move(1100, 260);
-  await expect
-    .poll(() => name.evaluate((el) => el.style.transform))
-    .not.toBe(first.transform);
-  await expect
-    .poll(() => name.evaluate((el) => el.style.textShadow))
-    .not.toBe(first.shadow);
-  await expect(page.locator("#home img")).toHaveCount(0);
-  await expect(page.locator("#about img")).toHaveAttribute(
-    "alt",
+  const hero = page.locator("#home");
+  await expect(hero.locator("img")).toHaveCount(1);
+  await expect(page.locator("#about img")).toHaveCount(0);
+  await expect(
+    hero.getByRole("button", { name: "Draw on my portrait" }),
+  ).toHaveCount(1);
+  await expect(hero.getByRole("heading", { level: 1 })).toHaveText(
     "Leeon Israel",
   );
-  await expect(page.getByText(/first-generation everything/i)).toHaveCount(0);
-  await expect(page.locator("#home")).toContainText("product management");
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(name).toHaveCSS("transform", "none");
-  const staticShadow = await name.evaluate(
-    (el) => getComputedStyle(el).textShadow,
-  );
-  await page.mouse.move(200, 160);
-  await expect(name).toHaveCSS("transform", "none");
-  await expect(name).toHaveCSS("text-shadow", staticShadow);
+  await expect(hero).toContainText("product management");
+  await expect(
+    hero.getByRole("link", { name: "GitHub", exact: true }),
+  ).toHaveAttribute("href", "https://github.com/LeeoniIsrael");
+  await expect(
+    hero.getByRole("link", { name: "LinkedIn", exact: true }),
+  ).toHaveAttribute("href", "https://linkedin.com/in/leeoniisrael");
+  expect((await request.get("/resume/leeon-israel.pdf")).status()).toBe(200);
+  for (const width of [317, 390, 768, 1024, 1440, 2121]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      )
+      .toBe(true);
+    await expect(hero.locator(".minimalist-name")).toHaveCSS("opacity", "1");
+    await expect(hero.locator("img")).toBeVisible();
+    const copy = await hero.locator(".minimalist-intro").boundingBox();
+    const title = await hero.locator("h1").boundingBox();
+    expect(copy!.x).toBeGreaterThanOrEqual(0);
+    expect(copy!.x + copy!.width).toBeLessThanOrEqual(width);
+    expect(title!.x).toBeGreaterThanOrEqual(0);
+    expect(title!.x + title!.width).toBeLessThanOrEqual(width);
+  }
+  await hero.getByRole("link", { name: "More about me" }).click();
+  await expect.poll(() => page.evaluate(() => location.hash)).toBe("#about");
+  await page.locator('.site-header a[href="#home"]').click();
+  await hero.getByRole("link", { name: "Explore my work" }).click();
+  await expect.poll(() => page.evaluate(() => location.hash)).toBe("#projects");
+  expect(errors).toEqual([]);
 });
 
 test("project formats preserve full screens and the illustrated footer works", async ({
@@ -210,14 +220,14 @@ test("project formats preserve full screens and the illustrated footer works", a
   await page.goto("/");
   await expect(
     page.locator(".project-index [data-preview=mobile]"),
-  ).toHaveCount(1);
+  ).toHaveCount(5);
   await expect(page.locator(".project-index [data-preview=web]")).toHaveCount(
-    7,
+    9,
   );
   await expect(page.locator(".project-index [data-preview=logo]")).toHaveCount(
-    6,
+    0,
   );
-  const phone = page.locator(".project-index .preview-phone");
+  const phone = page.locator(".project-index .preview-phone").first();
   const ratio = await phone.evaluate((el) => el.clientHeight / el.clientWidth);
   expect(ratio).toBeGreaterThan(2);
   await page.locator(".project-cover").first().click();
@@ -228,14 +238,11 @@ test("project formats preserve full screens and the illustrated footer works", a
   await expect(page.locator(".dialog-mobile .preview-phone")).toBeVisible();
   await page.keyboard.press("Escape");
   await page.locator(".site-footer").scrollIntoViewIfNeeded();
-  await expect(page.locator(".footer-panorama img")).toBeVisible();
-  await expect
-    .poll(() =>
-      page
-        .locator(".footer-panorama img")
-        .evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0),
-    )
-    .toBe(true);
+  await expect(page.locator(".signature-city")).toBeVisible();
+  await expect(page.locator(".signature-sketch")).toHaveAttribute(
+    "href",
+    "/images/footer-manhattan-reference.webp",
+  );
   await expect(
     page.getByRole("navigation", { name: "Footer navigation" }),
   ).toBeVisible();
@@ -271,17 +278,15 @@ test("project previews, screen inspection, and sequential browsing work together
     exact: true,
   });
   await inspect.click();
-  await page
-    .getByRole("button", { name: "Reading preferences", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Siddur", exact: true }).click();
   await expect(page.locator(".inspection-media img")).toHaveAttribute(
     "alt",
-    "Kavanah reading preferences screen",
+    "Kavanah siddur screen",
   );
   await page.keyboard.press("ArrowRight");
   await expect(page.locator(".inspection-media img")).toHaveAttribute(
     "alt",
-    "Kavanah prayer tradition screen",
+    "Kavanah prayer reader screen",
   );
   const violations = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -294,15 +299,15 @@ test("project previews, screen inspection, and sequential browsing work together
   await expect(trigger).toBeFocused();
   await page.setViewportSize({ width: 390, height: 844 });
   await page
-    .getByRole("button", { name: "View Kavanah welcome screen", exact: true })
+    .getByRole("button", { name: "View Kavanah home screen", exact: true })
     .click();
   await expect(page.locator(".project-inspection")).toBeVisible();
   await page
-    .getByRole("button", { name: "Prayer tradition", exact: true })
+    .getByRole("button", { name: "Prayer reader", exact: true })
     .click();
   await expect(page.locator(".inspection-media img")).toHaveAttribute(
     "alt",
-    "Kavanah prayer tradition screen",
+    "Kavanah prayer reader screen",
   );
   expect(
     await page
@@ -314,4 +319,443 @@ test("project previews, screen inspection, and sequential browsing work together
     .click();
   await expect(page.getByRole("dialog")).not.toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test("supplied mobile screens stay uncropped and switch independently for each project", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  for (const [id, title, names, dimensions] of [
+    [
+      "kavanah",
+      "Kavanah",
+      ["Home", "Siddur", "Prayer reader"],
+      [
+        [1206, 2622],
+        [1206, 2622],
+        [1206, 2622],
+      ],
+    ],
+    [
+      "onhand",
+      "ONHAND",
+      ["Home", "Specialist profile", "Worker dashboard"],
+      [
+        [860, 2200],
+        [860, 2200],
+        [860, 2500],
+      ],
+    ],
+    [
+      "signify",
+      "Signify",
+      ["Translate", "Conversation", "Phrasebook"],
+      [
+        [1206, 2622],
+        [1206, 2622],
+        [1206, 2622],
+      ],
+    ],
+  ] as const) {
+    await page.locator(`.project-cover[data-project=${id}]`).click();
+    await page
+      .getByRole("button", { name: `View ${title} screens`, exact: true })
+      .click();
+    for (let i = 0; i < names.length; i++) {
+      await page.getByRole("button", { name: names[i], exact: true }).click();
+      const image = page.locator(".inspection-media img");
+      await expect(image).toHaveAttribute(
+        "alt",
+        `${title} ${names[i].toLowerCase()} screen`,
+      );
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (el: HTMLImageElement) => el.complete && el.naturalWidth > 0,
+          ),
+        )
+        .toBe(true);
+      await expect(image).toHaveCSS("object-fit", "contain");
+      const [width, height] = dimensions[i];
+      await expect(image).toHaveAttribute("width", String(width));
+      await expect(image).toHaveAttribute("height", String(height));
+      const ratio = await page
+        .locator(".inspection-media .preview-phone")
+        .evaluate((el) => {
+          const box = el.getBoundingClientRect();
+          return box.width / box.height;
+        });
+      expect(ratio).toBeCloseTo(390 / 844, 2);
+      expect(
+        await page
+          .locator("dialog")
+          .evaluate((el) => el.scrollWidth <= el.clientWidth),
+      ).toBe(true);
+    }
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator(".inspection-media img")).toHaveAttribute(
+      "alt",
+      `${title} ${names[0].toLowerCase()} screen`,
+    );
+    await page
+      .getByRole("button", { name: "Close project details", exact: true })
+      .click();
+    await expect(page.getByRole("dialog")).not.toBeVisible();
+  }
+  await expect(
+    page.locator("[data-showcase=signify] .showcase-phone-center"),
+  ).toBeVisible();
+});
+
+test("three featured mobile products have distinct scroll motion and direct screen access", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await expect(page.locator("[data-showcase]")).toHaveCount(3);
+  expect(
+    await page
+      .locator("[data-showcase]")
+      .evaluateAll((elements) =>
+        elements.map((el) => el.getAttribute("data-showcase")),
+      ),
+  ).toEqual(["kavanah", "onhand", "signify"]);
+  await expect(page.locator(".selected-pair")).toHaveCount(0);
+  await expect(
+    page.locator(".project-cover[data-project=spotify]"),
+  ).toBeVisible();
+  for (const id of ["onhand", "signify"]) {
+    const showcase = page.locator(`[data-showcase=${id}]`);
+    const top = await showcase.evaluate(
+      (el) => el.getBoundingClientRect().top + scrollY,
+    );
+    await page.evaluate(
+      (y) => window.scrollTo({ top: y, behavior: "instant" }),
+      top - 850,
+    );
+    await page.waitForTimeout(150);
+    const firstTransform = await showcase
+      .locator(".showcase-phone-side")
+      .first()
+      .evaluate((el) => getComputedStyle(el).transform);
+    const before = await showcase.boundingBox();
+    await page.evaluate(() =>
+      window.scrollBy({ top: 350, behavior: "instant" }),
+    );
+    await page.waitForTimeout(150);
+    const after = await showcase.boundingBox();
+    expect(before!.y - after!.y).toBeCloseTo(350, 0);
+    const secondTransform = await showcase
+      .locator(".showcase-phone-side")
+      .first()
+      .evaluate((el) => getComputedStyle(el).transform);
+    expect(secondTransform).not.toBe(firstTransform);
+    await expect(showcase).toHaveCSS("position", "relative");
+    await showcase.locator(".showcase-phone-center").click();
+    await expect(page.locator(".project-inspection")).toBeVisible();
+    await expect(page.locator(".inspection-media img")).toHaveAttribute(
+      "alt",
+      id === "onhand" ? "ONHAND home screen" : "Signify translate screen",
+    );
+    await page
+      .getByRole("button", { name: "Close project details", exact: true })
+      .click();
+    await expect(page.getByRole("dialog")).not.toBeVisible();
+  }
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const width of [320, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      )
+      .toBe(true);
+  }
+});
+
+test("featured app frames match and animated screens never overlap their copy", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const width of [320, 390, 768, 1000, 1200, 1440, 1920, 2828, 3440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.waitForTimeout(200);
+    const dimensions = await page
+      .locator("[data-showcase] .iphone-frame")
+      .evaluateAll((els) =>
+        els.map((el) => ({
+          width: parseFloat(getComputedStyle(el).width),
+          height: parseFloat(getComputedStyle(el).height),
+        })),
+      );
+    expect(dimensions).toHaveLength(9);
+    const hardware = await page
+      .locator("[data-showcase] .iphone-device")
+      .evaluateAll((devices) =>
+        devices.map((device) => {
+          const shell = getComputedStyle(device);
+          const display = getComputedStyle(
+            device.querySelector(".iphone-display")!,
+          );
+          const island = getComputedStyle(
+            device.querySelector(".iphone-island")!,
+          );
+          return [
+            shell.width,
+            shell.height,
+            shell.padding,
+            shell.borderRadius,
+            display.borderRadius,
+            island.width,
+            island.height,
+            island.top,
+            island.left,
+          ];
+        }),
+      );
+    expect(hardware).toHaveLength(9);
+    for (const device of hardware) expect(device).toEqual(hardware[0]);
+    for (const size of dimensions) {
+      expect(size.width).toBeCloseTo(dimensions[0].width, 1);
+      expect(size.height).toBeCloseTo(dimensions[0].height, 1);
+      expect(size.width / size.height).toBeCloseTo(390 / 844, 2);
+    }
+    for (const id of ["kavanah", "onhand", "signify"]) {
+      const section = page.locator(`[data-showcase=${id}]`);
+      if (width >= 1200) {
+        const copy = await section.locator(".scroll-heading").boundingBox();
+        expect(copy!.width, `${id} text width at ${width}px`).toBeGreaterThan(
+          300,
+        );
+        expect(copy!.height).toBeLessThan(600);
+        const media = await section
+          .locator(id === "kavanah" ? ".scroll-stage" : ".showcase-stage")
+          .boundingBox();
+        expect(media!.width).toBeGreaterThan(600);
+      }
+      const bounds = await section.evaluate((el) => ({
+        top: el.getBoundingClientRect().top + scrollY,
+        height: el.clientHeight,
+      }));
+      for (const target of [
+        bounds.top - 900,
+        bounds.top + bounds.height * 0.5 - 400,
+      ]) {
+        await page.evaluate(
+          (y) => scrollTo({ top: y, behavior: "instant" }),
+          target,
+        );
+        await page.waitForTimeout(100);
+        const intersects = await section.evaluate((el) => {
+          const text = el
+            .querySelector(".scroll-heading")!
+            .getBoundingClientRect();
+          return [...el.querySelectorAll(".iphone-frame")].some((phone) => {
+            const frame = phone.getBoundingClientRect();
+            return (
+              frame.left < text.right &&
+              frame.right > text.left &&
+              frame.top < text.bottom &&
+              frame.bottom > text.top
+            );
+          });
+        });
+        expect(intersects, `${id} at ${width}px`).toBe(false);
+      }
+    }
+  }
+  await expect(
+    page.locator("[data-showcase=signify] .iphone-island"),
+  ).toHaveCount(3);
+});
+
+test("every project has a framed interface and new previews open without cropping", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator(".project-cover [data-preview=logo]")).toHaveCount(
+    0,
+  );
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const [id, title, format] of [
+      ["apex", "APEX Weather", "web"],
+      ["ocean", "Ocean Vacations", "web"],
+      ["kimo", "KiMO", "web"],
+      ["cocky", "Cocky Clicker", "mobile"],
+      ["rentconnect", "RentConnect", "mobile"],
+    ]) {
+      await page.locator(`.project-cover[data-project=${id}]`).click();
+      await page
+        .getByRole("button", { name: `View ${title} screens`, exact: true })
+        .click();
+      const preview = page.locator(
+        `.inspection-media [data-preview=${format}]`,
+      );
+      await expect(preview).toBeVisible();
+      const img = preview.locator("img");
+      await expect
+        .poll(() =>
+          img.evaluate(
+            (el: HTMLImageElement) => el.complete && el.naturalWidth > 0,
+          ),
+        )
+        .toBe(true);
+      await expect(img).toHaveCSS("object-fit", "contain");
+      if (format === "mobile") {
+        await expect(preview.locator(".iphone-frame")).toBeVisible();
+      } else {
+        await expect(
+          preview.locator(".browser-frame, .browser-chrome"),
+        ).toHaveCount(0);
+      }
+      expect(
+        await page
+          .locator("dialog")
+          .evaluate((el) => el.scrollWidth <= el.clientWidth),
+      ).toBe(true);
+      await page
+        .getByRole("button", { name: "Close project details", exact: true })
+        .click();
+      await expect(page.getByRole("dialog")).not.toBeVisible();
+    }
+  }
+});
+
+test("footer skyline fills the width below the complete name and respects reduced motion", async ({
+  page,
+  request,
+}) => {
+  await page.setViewportSize({ width: 2121, height: 1011 });
+  await page.goto("/");
+  const art = page.locator(".skyline-signature");
+  await page.evaluate(() =>
+    scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "instant",
+    }),
+  );
+  const name = page.locator(".footer-signature-name");
+  await expect(name).toHaveText("Leeon Israel");
+  await expect(name).toHaveCSS("opacity", "1");
+  const city = page.locator(".signature-city");
+  const cityBounds = (await city.boundingBox())!;
+  const nameBounds = (await name.boundingBox())!;
+  expect(cityBounds.x).toBe(0);
+  expect(cityBounds.width).toBe(2121);
+  expect(cityBounds.height).toBeLessThanOrEqual(650);
+  expect(nameBounds.y + nameBounds.height).toBeLessThan(cityBounds.y);
+  await expect(art).toHaveCSS("position", "relative");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.reload();
+  await expect(name).toHaveCSS("opacity", "1");
+  await page.setViewportSize({ width: 317, height: 704 });
+  await expect.poll(async () => (await city.boundingBox())!.width).toBe(317);
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+    )
+    .toBe(true);
+});
+
+test("portrait drawing opens from the photo, supports tools, and clears on every dismissal", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: "Draw on my portrait" });
+  await trigger.click();
+  const dialog = page.getByRole("dialog", { name: "Make your mark." });
+  const canvas = dialog.locator("canvas");
+  await expect(dialog).toBeVisible();
+  await expect(canvas).toHaveCSS("pointer-events", "auto");
+  const countInk = () =>
+    canvas.evaluate((el) => {
+      const data = (el as HTMLCanvasElement)
+        .getContext("2d")!
+        .getImageData(0, 0, 1000, 1250).data;
+      let count = 0;
+      for (let i = 3; i < data.length; i += 4) if (data[i]) count++;
+      return count;
+    });
+  await dialog.getByRole("button", { name: "Glasses", exact: true }).click();
+  const glasses = dialog.locator(".portrait-glasses-overlay");
+  await expect(glasses).toHaveCount(1);
+  await expect(glasses).toHaveCSS("pointer-events", "none");
+  await expect(
+    dialog.getByRole("button", { name: "Glasses on", exact: true }),
+  ).toBeDisabled();
+  await expect.poll(countInk).toBe(0);
+  const rect = (await canvas.boundingBox())!;
+  await page.mouse.move(rect.x + rect.width * 0.3, rect.y + rect.height * 0.3);
+  await page.mouse.down();
+  await page.mouse.move(rect.x + rect.width * 0.6, rect.y + rect.height * 0.4, {
+    steps: 12,
+  });
+  await page.mouse.up();
+  await expect.poll(countInk).toBeGreaterThan(100);
+  await dialog.getByRole("button", { name: "Clear drawing" }).click();
+  await expect.poll(countInk).toBe(0);
+  await expect(glasses).toHaveCount(1);
+  await expect(
+    dialog.getByRole("button", { name: "Glasses on", exact: true }),
+  ).toBeDisabled();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await expect(canvas).toHaveCSS("pointer-events", "auto");
+  await expect.poll(countInk).toBe(0);
+  await expect(glasses).toHaveCount(0);
+  await expect(
+    dialog.getByRole("button", { name: "Glasses", exact: true }),
+  ).toBeEnabled();
+  await page.locator(".portrait-backdrop").click({ position: { x: 5, y: 5 } });
+  await expect(dialog).not.toBeVisible();
+  await page.setViewportSize({ width: 317, height: 704 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await trigger.click();
+  await expect(canvas).toHaveCSS("pointer-events", "auto");
+  await dialog.getByRole("button", { name: "Glasses", exact: true }).click();
+  await expect(glasses).toHaveCount(1);
+  await expect(
+    dialog.getByRole("button", { name: "Glasses on", exact: true }),
+  ).toBeDisabled();
+  const touch = await page.context().newCDPSession(page);
+  const mobileCanvas = (await canvas.boundingBox())!;
+  const x = mobileCanvas.x + mobileCanvas.width * 0.4;
+  const y = mobileCanvas.y + mobileCanvas.height * 0.3;
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x, y }],
+  });
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x: x + 30, y: y + 30 }],
+  });
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await expect.poll(countInk).toBeGreaterThan(100);
+  const controls = await dialog.locator(".portrait-controls").boundingBox();
+  expect(controls!.x).toBeGreaterThanOrEqual(0);
+  expect(controls!.x + controls!.width).toBeLessThanOrEqual(317);
+  expect(controls!.y + controls!.height).toBeLessThan(704);
+  await page.setViewportSize({ width: 704, height: 317 });
+  await expect
+    .poll(async () => {
+      const bounds = await dialog.locator(".portrait-controls").boundingBox();
+      return (
+        bounds!.x >= 0 &&
+        bounds!.x + bounds!.width <= 704 &&
+        bounds!.y >= 0 &&
+        bounds!.y + bounds!.height <= 317
+      );
+    })
+    .toBe(true);
+  await dialog.getByRole("button", { name: "Close portrait" }).click();
+  await expect(dialog).not.toBeVisible();
 });

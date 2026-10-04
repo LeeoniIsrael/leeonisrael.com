@@ -12,7 +12,7 @@ import {
 import type { Project } from "@/lib/portfolio";
 import history from "@/lib/project-history.json";
 import { ProjectVisual, previewFormat } from "./project-visual";
-const screens = ["Welcome", "Reading preferences", "Prayer tradition"];
+import { projectScreens } from "@/lib/project-screens";
 
 export function ProjectDialog({
   project,
@@ -37,6 +37,7 @@ export function ProjectDialog({
   const [screen, setScreen] = useState(0);
   const [direction, setDirection] = useState(1);
   const reduced = useReducedMotion();
+  const screens = project ? (projectScreens[project.id] ?? []) : [];
   const isOpen = Boolean(project);
   useEffect(() => {
     if (!isOpen) return;
@@ -82,7 +83,7 @@ export function ProjectDialog({
   }
   function navigate(step: number) {
     if (!project || closing) return;
-    if (inspect && previewFormat(project) === "mobile") {
+    if (inspect && screens.length > 1) {
       setScreen((index) => (index + step + screens.length) % screens.length);
       return;
     }
@@ -170,7 +171,7 @@ export function ProjectDialog({
           <span className="sr-only" role="status">
             {project.title}
             {inspect
-              ? `, screen view${project.id === "kavanah" ? `, ${screens[screen]}` : ""}`
+              ? `, screen view${screens.length ? `, ${screens[screen]?.name}` : ""}`
               : ", project details"}
           </span>
           <AnimatePresence mode="wait" initial={false}>
@@ -183,13 +184,13 @@ export function ProjectDialog({
                 exit={{ opacity: 0 }}
                 transition={{ duration: reduced ? 0 : 0.14 }}
               >
-                {project.id === "kavanah" && (
+                {screens.length > 1 && (
                   <div
                     className="screen-switcher"
                     role="group"
-                    aria-label="Kavanah screens"
+                    aria-label={`${project.title} screens`}
                   >
-                    {screens.map((name, i) => (
+                    {screens.map(({ name }, i) => (
                       <button
                         key={name}
                         aria-pressed={screen === i}
@@ -222,9 +223,10 @@ export function ProjectDialog({
                   </AnimatePresence>
                 </div>
                 <p className="inspection-caption">
-                  {project.id === "kavanah"
-                    ? "Actual onboarding screens · Use ← → to explore"
-                    : "Application screenshot"}
+                  {screens[screen]?.caption ??
+                    (screens.length > 1
+                      ? "App screens · Use ← → to explore"
+                      : "Application screenshot")}
                 </p>
               </motion.div>
             ) : (
