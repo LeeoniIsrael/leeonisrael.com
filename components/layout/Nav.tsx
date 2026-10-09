@@ -13,6 +13,7 @@ import { Menu, Moon, Sun, X, ArrowUpRight } from "lucide-react";
 const links = [
   { label: "Work", href: "#projects" },
   { label: "Experience", href: "#experience" },
+  { label: "Publications", href: "#publications" },
   { label: "About", href: "#about" },
 ];
 export default function Nav() {
@@ -43,7 +44,14 @@ export default function Nav() {
   useEffect(() => {
     setMounted(true);
     const update = () => {
-      const ids = ["home", "projects", "experience", "about", "contact"];
+      const ids = [
+        "home",
+        "projects",
+        "experience",
+        "publications",
+        "about",
+        "contact",
+      ];
       let current = "home";
       for (const id of ids) {
         const el = document.getElementById(id);

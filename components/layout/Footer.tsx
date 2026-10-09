@@ -46,6 +46,7 @@ export default function Footer() {
             <h3>Explore</h3>
             <a href="#projects">Projects</a>
             <a href="#experience">Experience</a>
+            <a href="#publications">Publications</a>
             <a href="#about">About</a>
             <a href="/resume/leeon-israel.pdf" target="_blank" rel="noreferrer">
               Resume <ArrowUpRight size={13} />

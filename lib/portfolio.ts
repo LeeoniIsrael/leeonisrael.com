@@ -11,7 +11,20 @@ export type Project = {
   image?: string;
   github?: string;
   live?: string;
+  publication?: string;
   visual?: "kavanah" | "apex" | "onhand" | "ocean" | "cocky" | "kimo";
+};
+export const kimoPublication = {
+  title: "KiMO: Knowledge-infused Multi-agent Orchestrator",
+  credit: "Co-author",
+  venue: "AAMAS 2026",
+  conference:
+    "25th International Conference on Autonomous Agents and Multiagent Systems",
+  track: "Demonstration Track",
+  details: "May 2026 · Paphos, Cyprus · pp. 4152–4154",
+  summary:
+    "A knowledge-guided approach to planning tasks and coordinating different kinds of AI agents. KiMO turns domain knowledge into workflows that experts can inspect and refine, demonstrated through a manufacturing use case.",
+  url: "https://dl.acm.org/doi/epdf/10.65109/WTIF5096",
 };
 export const projects: Project[] = [
   {
@@ -116,7 +129,7 @@ export const projects: Project[] = [
     visual: "kimo",
     summary: "Knowledge that helps multiple agents work together.",
     description:
-      "Co-authored KiMO: Knowledge-infused Multi-agent Orchestrator at the University of South Carolina AI Institute. The work was accepted at AAMAS 2026 and explores how structured knowledge can guide heterogeneous agents.",
+      "Co-authored KiMO: Knowledge-infused Multi-agent Orchestrator at the University of South Carolina AI Institute. Published in the AAMAS 2026 Demonstration Track, the work explores how structured knowledge can guide heterogeneous agents.",
     features: [
       "A two-stage pipeline for planning and agent coordination.",
       "Planning ontologies encode task structure; agent registries describe capabilities.",
@@ -125,6 +138,7 @@ export const projects: Project[] = [
     focus:
       "Making agent coordination inspectable and grounded in task semantics rather than relying on free-form communication alone.",
     tags: ["Python", "Multi-agent systems", "Knowledge graphs", "Research"],
+    publication: kimoPublication.url,
   },
   {
     id: "cocky",

@@ -10,7 +10,7 @@ Reviewed October 2, 2026. Website copy is an editorial summary, not a claim of i
 - RentConnect: https://github.com/LeeoniIsrael/rent-connect-agent (README). Corrected mobile app description to the documented multi-agent housing prototype.
 - ONHAND: user's ongoing chat “Build the ONHAND mobile app” and local Expo project. New repository was empty when reviewed; planned features explicitly labeled as goals.
 - Ocean Vacations: local project README and “Add Split Cleaning report” chat. Described without customer data, private endpoints, or unsupported public-demo links.
-- KiMO: supplied resume and original website research description. No fabricated paper link.
+- KiMO: supplied resume and original website research description, plus the user-supplied [ACM paper link](https://dl.acm.org/doi/epdf/10.65109/WTIF5096). Publication title, author order, Demonstration Track, conference dates, and pages verified against the [AAMAS 2026 proceedings paper](https://ifmas.csc.liv.ac.uk/Proceedings/aamas2026/pdfs/WTIF5096.pdf) and Crossref DOI metadata on October 9, 2026.
 - Signify, Instagram Clone, Dorm Dish, Weather, Coin:Flipper, Calculator: existing portfolio copy, with GitHub destinations checked against the public repository list. Removed absolutes such as “zero lag.”
 
 The complete original nine-role career was recovered from `origin/main:components/sections/Experience.tsx`, including SEO, Empowered Buildings, Bank of America, DE Shaw & Co., and HeadStart Fellowship. Original stories, skills, and reflections are preserved in `lib/experience-history.json`; resume updates add the current UBS role for ten total. All fourteen original courses and six capability domains remain accessible.

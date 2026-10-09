@@ -293,6 +293,16 @@ export function ProjectDialog({
                     ))}
                   </div>
                   <div className="dialog-links">
+                    {project.publication && (
+                      <a
+                        className="text-link"
+                        href={project.publication}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Read paper (PDF) <ArrowUpRight size={16} />
+                      </a>
+                    )}
                     {project.github && (
                       <a
                         className="button-primary"
